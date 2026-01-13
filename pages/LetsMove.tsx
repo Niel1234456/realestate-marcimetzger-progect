@@ -38,15 +38,15 @@ const LetsMove: React.FC = () => {
   return (
     <div className="bg-gray-50 min-h-screen pt-32 pb-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-fadeInUp opacity-0">
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Let's Move</h2>
           <p className="mt-4 text-lg text-gray-600">Customize your session and let AI do the planning.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Controls Column */}
-          <div className="md:col-span-1">
-            <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 sticky top-32">
+          <div className="md:col-span-1 animate-fadeInUp delay-100 opacity-0">
+            <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-6 sticky top-32 transition-all duration-500 ease-expo hover:shadow-md">
               
               {/* Duration */}
               <div>
@@ -60,7 +60,7 @@ const LetsMove: React.FC = () => {
                   step="5"
                   value={formData.duration}
                   onChange={(e) => handleInputChange('duration', parseInt(e.target.value))}
-                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary"
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary transition-all duration-300"
                 />
                 <div className="flex justify-between text-xs text-gray-500 mt-1">
                   <span>5m</span>
@@ -73,15 +73,17 @@ const LetsMove: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
                   <Activity size={16} className="text-primary" /> Intensity
                 </label>
-                <select
-                  value={formData.intensity}
-                  onChange={(e) => handleInputChange('intensity', e.target.value as IntensityLevel)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary border p-2.5 bg-gray-50"
-                >
-                  {Object.values(IntensityLevel).map(level => (
-                    <option key={level} value={level}>{level}</option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select
+                    value={formData.intensity}
+                    onChange={(e) => handleInputChange('intensity', e.target.value as IntensityLevel)}
+                    className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary border p-2.5 bg-gray-50 transition-all duration-300 ease-smooth hover:bg-gray-100"
+                  >
+                    {Object.values(IntensityLevel).map(level => (
+                      <option key={level} value={level}>{level}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Type */}
@@ -92,7 +94,7 @@ const LetsMove: React.FC = () => {
                 <select
                   value={formData.type}
                   onChange={(e) => handleInputChange('type', e.target.value as WorkoutType)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary border p-2.5 bg-gray-50"
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary border p-2.5 bg-gray-50 transition-all duration-300 ease-smooth hover:bg-gray-100"
                 >
                   {Object.values(WorkoutType).map(type => (
                     <option key={type} value={type}>{type}</option>
@@ -110,14 +112,14 @@ const LetsMove: React.FC = () => {
                   placeholder="e.g. dumbbells, mat"
                   value={formData.equipment}
                   onChange={(e) => handleInputChange('equipment', e.target.value)}
-                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary border p-2.5 bg-gray-50 text-sm"
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-primary focus:border-primary border p-2.5 bg-gray-50 text-sm transition-all duration-300 ease-smooth hover:bg-gray-100"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-primary hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform active:scale-95 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+                className={`w-full flex justify-center py-3.5 px-4 border border-transparent rounded-xl shadow-md text-sm font-bold text-white bg-primary hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 ease-expo transform hover:scale-[1.02] active:scale-95 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
               >
                 {loading ? (
                   <span className="flex items-center gap-2">
@@ -134,9 +136,9 @@ const LetsMove: React.FC = () => {
           </div>
 
           {/* Results Column */}
-          <div className="md:col-span-2">
+          <div className="md:col-span-2 animate-fadeInUp delay-200 opacity-0">
             {error && (
-              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-fade-in">
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md animate-fadeIn">
                 <div className="flex">
                   <div className="ml-3">
                     <p className="text-sm text-red-700">{error}</p>
@@ -146,7 +148,7 @@ const LetsMove: React.FC = () => {
             )}
 
             {!workout && !loading && !error && (
-              <div className="h-full flex flex-col items-center justify-center bg-white rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center text-gray-400 min-h-[400px]">
+              <div className="h-full flex flex-col items-center justify-center bg-white rounded-2xl border-2 border-dashed border-gray-200 p-12 text-center text-gray-400 min-h-[400px] transition-all duration-500 ease-expo hover:border-green-200">
                 <Dumbbell className="h-16 w-16 mb-4 text-gray-200" />
                 <h3 className="text-xl font-medium text-gray-900">No workout generated yet</h3>
                 <p className="mt-2">Adjust the settings and click generate to get moving.</p>
@@ -154,7 +156,7 @@ const LetsMove: React.FC = () => {
             )}
 
             {loading && !workout && (
-               <div className="h-full flex flex-col items-center justify-center bg-white rounded-2xl shadow-sm border border-gray-100 p-12 min-h-[400px]">
+               <div className="h-full flex flex-col items-center justify-center bg-white rounded-2xl shadow-sm border border-gray-100 p-12 min-h-[400px] animate-pulse">
                  <div className="animate-bounce mb-6">
                    <Activity className="h-16 w-16 text-primary" />
                  </div>
@@ -164,15 +166,15 @@ const LetsMove: React.FC = () => {
             )}
 
             {workout && (
-              <div className="bg-white overflow-hidden shadow-xl rounded-2xl border border-gray-100 animate-fade-in-up">
+              <div className="bg-white overflow-hidden shadow-xl rounded-2xl border border-gray-100 animate-scaleIn origin-top">
                 <div className="px-6 py-6 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white flex justify-between items-start sm:items-center">
-                  <div>
+                  <div className="animate-fadeInUp delay-100 opacity-0">
                     <h3 className="text-2xl leading-7 font-bold text-gray-900">{workout.title}</h3>
                     <p className="mt-1 text-sm text-gray-500">{workout.description}</p>
                   </div>
                   <button 
                     onClick={() => setWorkout(null)} 
-                    className="text-gray-400 hover:text-primary transition-colors p-2 hover:bg-gray-50 rounded-full"
+                    className="text-gray-400 hover:text-primary transition-all duration-300 p-2 hover:bg-gray-50 rounded-full hover:rotate-180"
                     title="Reset"
                   >
                     <RotateCcw size={20} />
@@ -181,29 +183,36 @@ const LetsMove: React.FC = () => {
                 <div className="px-6 py-6">
                   <div className="space-y-8">
                     {workout.exercises.map((exercise, index) => (
-                      <div key={index} className="flex group">
+                      <div 
+                        key={index} 
+                        className="flex group animate-fadeInUp opacity-0"
+                        style={{ animationDelay: `${200 + index * 100}ms` }}
+                      >
                         <div className="flex-shrink-0 mr-4 flex flex-col items-center">
-                          <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-primary font-bold text-base border-2 border-green-100 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all shadow-sm">
+                          <div className="h-10 w-10 rounded-full bg-green-50 flex items-center justify-center text-primary font-bold text-base border-2 border-green-100 group-hover:bg-primary group-hover:border-primary group-hover:text-white transition-all duration-300 shadow-sm group-hover:scale-110">
                             {index + 1}
                           </div>
                           {index !== workout.exercises.length - 1 && (
-                            <div className="h-full w-0.5 bg-gray-100 my-2 group-hover:bg-green-100 transition-colors"></div>
+                            <div className="h-full w-0.5 bg-gray-100 my-2 group-hover:bg-green-100 transition-colors duration-500"></div>
                           )}
                         </div>
                         <div className="flex-grow pb-2">
                           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
-                            <h4 className="text-lg font-bold text-gray-900">{exercise.name}</h4>
-                            <span className="inline-flex self-start items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 tracking-wide uppercase">
+                            <h4 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors duration-300">{exercise.name}</h4>
+                            <span className="inline-flex self-start items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700 tracking-wide uppercase transition-transform duration-300 group-hover:scale-105">
                               {exercise.durationOrReps}
                             </span>
                           </div>
-                          <p className="text-gray-600 mt-2 text-base leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">{exercise.instructions}</p>
+                          <p className="text-gray-600 mt-2 text-base leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100 transition-all duration-300 group-hover:bg-white group-hover:shadow-md">{exercise.instructions}</p>
                         </div>
                       </div>
                     ))}
                   </div>
 
-                  <div className="mt-10 bg-gradient-to-br from-green-50 to-white rounded-xl p-5 border border-green-100 flex gap-4 items-start shadow-sm">
+                  <div 
+                    className="mt-10 bg-gradient-to-br from-green-50 to-white rounded-xl p-5 border border-green-100 flex gap-4 items-start shadow-sm animate-fadeInUp opacity-0"
+                    style={{ animationDelay: `${200 + workout.exercises.length * 100}ms` }}
+                  >
                      <div className="p-2 bg-white rounded-full shadow-sm">
                        <CheckCircle className="text-primary" size={24} />
                      </div>

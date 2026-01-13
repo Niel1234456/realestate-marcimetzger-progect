@@ -19,29 +19,46 @@
               dark: '#000000', // Black
             },
             transitionTimingFunction: {
-              'expo': 'cubic-bezier(0.19, 1, 0.22, 1)',
+              'expo': 'cubic-bezier(0.19, 1, 0.22, 1)', // Exponential ease out (very smooth stop)
+              'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)', // Standard efficient ease
+              'elastic': 'cubic-bezier(0.34, 1.56, 0.64, 1)', // Slight bounce
             },
             animation: {
-              blob: "blob 7s infinite",
-              fadeInUp: "fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards",
+              blob: "blob 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)",
+              fadeInUp: "fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               slideUp: "slideUp 1s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+              slideDown: "slideDown 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               progress: "progress 5s linear infinite",
               shimmer: "shimmer 2s infinite",
+              scaleIn: "scaleIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+              fadeIn: "fadeIn 0.6s ease-out forwards",
             },
             keyframes: {
               blob: {
                 "0%": { transform: "translate(0px, 0px) scale(1)" },
-                "33%": { transform: "translate(30px, -50px) scale(1.1)" },
-                "66%": { transform: "translate(-20px, 20px) scale(0.9)" },
+                "33%": { transform: "translate(30px, -30px) scale(1.05)" },
+                "66%": { transform: "translate(-20px, 20px) scale(0.95)" },
                 "100%": { transform: "translate(0px, 0px) scale(1)" },
               },
               fadeInUp: {
-                "0%": { opacity: "0", transform: "translateY(20px)" },
+                "0%": { opacity: "0", transform: "translateY(30px)" },
                 "100%": { opacity: "1", transform: "translateY(0)" },
               },
               slideUp: {
                 "0%": { transform: "translateY(100%)", opacity: "0" },
                 "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              slideDown: {
+                "0%": { transform: "translateY(-20px)", opacity: "0" },
+                "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              scaleIn: {
+                "0%": { transform: "scale(0.9)", opacity: "0" },
+                "100%": { transform: "scale(1)", opacity: "1" },
+              },
+              fadeIn: {
+                 "0%": { opacity: "0" },
+                 "100%": { opacity: "1" },
               },
               progress: {
                 "0%": { width: "0%" },
@@ -59,14 +76,19 @@
       body {
         font-family: 'Inter', sans-serif;
         background-color: #f3f4f6;
+        scroll-behavior: smooth;
       }
       /* Custom utility for animation delays */
       .delay-0 { animation-delay: 0ms; }
+      .delay-75 { animation-delay: 75ms; }
       .delay-100 { animation-delay: 100ms; }
+      .delay-150 { animation-delay: 150ms; }
       .delay-200 { animation-delay: 200ms; }
       .delay-300 { animation-delay: 300ms; }
       .delay-400 { animation-delay: 400ms; }
+      .delay-500 { animation-delay: 500ms; }
       .delay-600 { animation-delay: 600ms; }
+      .delay-700 { animation-delay: 700ms; }
     </style>
   <script type="importmap">
 {

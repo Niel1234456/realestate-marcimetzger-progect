@@ -45,7 +45,7 @@ const Home: React.FC = () => {
     if (isPaused) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 2500); 
+    }, 4000); // Slowed down slightly for better readability
     return () => clearInterval(timer);
   }, [isPaused]);
 
@@ -80,7 +80,7 @@ const Home: React.FC = () => {
             <div key={currentSlide} className="space-y-6 sm:space-y-8">
               {/* Top Label */}
               <div className="overflow-hidden">
-                <div className="flex items-center gap-3 animate-slideUp">
+                <div className="flex items-center gap-3 animate-slideUp opacity-0">
                   <span className="h-px w-8 sm:w-12 bg-green-500"></span>
                   <p className="text-green-400 font-bold tracking-[0.2em] uppercase text-xs sm:text-sm">
                     {slides[currentSlide].label} Collection
@@ -91,12 +91,12 @@ const Home: React.FC = () => {
               {/* Huge Typography */}
               <div className="space-y-[-0.5rem] sm:space-y-[-1rem]">
                 <div className="overflow-hidden">
-                  <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-white tracking-tighter leading-[0.9] animate-slideUp delay-100 drop-shadow-2xl">
+                  <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-white tracking-tighter leading-[0.9] animate-slideUp delay-100 opacity-0 drop-shadow-2xl">
                     {slides[currentSlide].title}
                   </h1>
                 </div>
                 <div className="overflow-hidden">
-                   <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-white to-green-300 tracking-tighter leading-[0.9] animate-slideUp delay-200 drop-shadow-2xl pb-2">
+                   <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-white to-green-300 tracking-tighter leading-[0.9] animate-slideUp delay-200 opacity-0 drop-shadow-2xl pb-2">
                     {slides[currentSlide].highlight}
                   </h1>
                 </div>
@@ -104,17 +104,17 @@ const Home: React.FC = () => {
 
               {/* Description */}
               <div className="overflow-hidden max-w-lg pt-2 sm:pt-4">
-                <p className="text-lg sm:text-xl text-gray-100 font-medium leading-relaxed animate-slideUp delay-300 border-l-2 border-white/30 pl-6 drop-shadow-md">
+                <p className="text-lg sm:text-xl text-gray-100 font-medium leading-relaxed animate-slideUp delay-300 opacity-0 border-l-2 border-white/30 pl-6 drop-shadow-md">
                   {slides[currentSlide].description}
                 </p>
               </div>
               
               {/* Buttons */}
               <div className="pt-6 sm:pt-8 overflow-hidden">
-                <div className="flex flex-wrap gap-6 animate-slideUp delay-400">
+                <div className="flex flex-wrap gap-6 animate-slideUp delay-400 opacity-0">
                   <Link 
                     to="/lets-move"
-                    className="group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-white text-gray-900 rounded-full overflow-hidden transition-all duration-300 hover:bg-green-50 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
+                    className="group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-white text-gray-900 rounded-full overflow-hidden transition-all duration-500 ease-expo hover:bg-green-50 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                   >
                     <span className="relative flex items-center font-bold tracking-widest text-xs sm:text-sm uppercase">
                       Explore Now <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -144,17 +144,17 @@ const Home: React.FC = () => {
               
               if (relativeIndex === 0) {
                 // Active slide: Hidden
-                queueClass = 'w-0 opacity-0 border-0 m-0 pointer-events-none';
+                queueClass = 'w-0 opacity-0 border-0 m-0 pointer-events-none scale-0';
               } else if (relativeIndex === 1 || relativeIndex === 2) {
                 // Next two slides: Fully Visible
-                queueClass = 'w-24 sm:w-32 md:w-40 opacity-100 hover:scale-105 hover:border-white/60';
+                queueClass = 'w-24 sm:w-32 md:w-40 opacity-100 hover:scale-105 hover:border-white/60 scale-100';
                 isVisible = true;
               } else if (relativeIndex === 3) {
                 // 3rd slide: Partially Visible (narrower, faded)
-                queueClass = 'w-3 sm:w-6 md:w-8 opacity-30 pointer-events-none grayscale';
+                queueClass = 'w-3 sm:w-6 md:w-8 opacity-30 pointer-events-none grayscale scale-95';
               } else {
                 // > 3: Hidden (for scalability if more slides added)
-                queueClass = 'w-0 opacity-0 border-0 m-0 overflow-hidden';
+                queueClass = 'w-0 opacity-0 border-0 m-0 overflow-hidden scale-0';
               }
 
               return (
@@ -172,11 +172,11 @@ const Home: React.FC = () => {
                   <img 
                     src={slide.image} 
                     alt={slide.label} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className="w-full h-full object-cover transition-transform duration-700 ease-expo group-hover:scale-110"
                   />
                   {isVisible && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3 sm:p-4 opacity-90 group-hover:opacity-100 transition-opacity">
-                      <div className="transform translate-y-0 group-hover:-translate-y-1 transition-transform duration-300">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-3 sm:p-4 opacity-90 group-hover:opacity-100 transition-opacity duration-300">
+                      <div className="transform translate-y-0 group-hover:-translate-y-1 transition-transform duration-500 ease-expo">
                         <span className="text-[10px] sm:text-xs text-green-400 font-mono font-bold tracking-widest block mb-0.5">
                           0{index + 1}
                         </span>
@@ -198,7 +198,7 @@ const Home: React.FC = () => {
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`h-[3px] transition-all duration-500 ease-out rounded-full ${
+                    className={`h-[3px] transition-all duration-700 ease-expo rounded-full ${
                       index === currentSlide 
                         ? 'w-24 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]' 
                         : 'w-12 bg-white/20 hover:bg-white/50'
@@ -207,7 +207,7 @@ const Home: React.FC = () => {
                   />
                ))}
              </div>
-             <span className="text-xl font-mono font-bold text-white tracking-widest pl-6 border-l border-white/30 shadow-black drop-shadow-lg">
+             <span className="text-xl font-mono font-bold text-white tracking-widest pl-6 border-l border-white/30 shadow-black drop-shadow-lg animate-fadeIn">
                 0{currentSlide + 1}
              </span>
           </div>
