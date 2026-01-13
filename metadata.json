@@ -1,0 +1,5 @@
+{
+  "name": "MoveAI",
+  "description": "A dynamic fitness web application that uses AI to generate personalized workout routines and movement challenges instantly.",
+  "requestFramePermissions": []
+}
