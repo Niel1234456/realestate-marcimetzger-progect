@@ -42,12 +42,12 @@ const Home: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused) return;
+    // Timer runs continuously regardless of hover state
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
-    }, 4000); // Slowed down slightly for better readability
+    }, 3500); 
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen bg-black overflow-hidden font-sans">
@@ -57,7 +57,7 @@ const Home: React.FC = () => {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-all duration-[1500ms] ease-expo ${
+            className={`absolute inset-0 transition-all duration-[3500ms] ease-expo ${
               index === currentSlide ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-110 z-0'
             }`}
           >
@@ -83,7 +83,7 @@ const Home: React.FC = () => {
                 <div className="flex items-center gap-3 animate-slideUp opacity-0">
                   <span className="h-px w-8 sm:w-12 bg-green-500"></span>
                   <p className="text-green-400 font-bold tracking-[0.2em] uppercase text-xs sm:text-sm">
-                    {slides[currentSlide].label} Collection
+                    {slides[currentSlide].label}
                   </p>
                 </div>
               </div>
@@ -117,7 +117,7 @@ const Home: React.FC = () => {
                     className="group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-white text-gray-900 rounded-full overflow-hidden transition-all duration-500 ease-expo hover:bg-green-50 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                   >
                     <span className="relative flex items-center font-bold tracking-widest text-xs sm:text-sm uppercase">
-                      Explore Now <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      Discover <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </Link>
                 </div>
@@ -130,8 +130,6 @@ const Home: React.FC = () => {
         {/* Bottom Right Controls */}
         <div 
           className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 z-20 flex flex-col items-end gap-6 pointer-events-auto"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
         >
           {/* Thumbnail Queue */}
           <div className="flex items-end gap-4 h-32 sm:h-44 md:h-56">
