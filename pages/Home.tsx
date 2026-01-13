@@ -39,10 +39,9 @@ const slides = [
 
 const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    // Timer runs continuously regardless of hover state
+    // Timer runs continuously
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 3500); 
@@ -53,12 +52,14 @@ const Home: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-black overflow-hidden font-sans">
       <div className="relative flex-grow h-screen w-full">
         
-        {/* Background Layer */}
+        {/* Background Layer with Blur Fade Transition */}
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-all duration-[3500ms] ease-expo ${
-              index === currentSlide ? 'opacity-100 scale-100 z-0' : 'opacity-0 scale-110 z-0'
+            className={`absolute inset-0 transition-all duration-[2500ms] ease-in-out ${
+              index === currentSlide 
+                ? 'opacity-100 blur-0 scale-110 z-10' 
+                : 'opacity-0 blur-2xl scale-100 z-0'
             }`}
           >
             <img
@@ -73,14 +74,14 @@ const Home: React.FC = () => {
         ))}
 
         {/* Main Text Content */}
-        <div className="absolute inset-0 z-10 w-full max-w-[90rem] mx-auto px-6 sm:px-12 lg:px-16 pointer-events-none flex flex-col justify-center">
+        <div className="absolute inset-0 z-20 w-full max-w-[90rem] mx-auto px-6 sm:px-12 lg:px-16 pointer-events-none flex flex-col justify-center">
           {/* Increased top margin to prevent header overlap */}
           <div className="max-w-5xl pointer-events-auto mt-32 sm:mt-24">
             
             <div key={currentSlide} className="space-y-6 sm:space-y-8">
               {/* Top Label */}
-              <div className="overflow-hidden">
-                <div className="flex items-center gap-3 animate-slideUp opacity-0">
+              <div>
+                <div className="flex items-center gap-3 animate-blurInUp opacity-0">
                   <span className="h-px w-8 sm:w-12 bg-green-500"></span>
                   <p className="text-green-400 font-bold tracking-[0.2em] uppercase text-xs sm:text-sm">
                     {slides[currentSlide].label}
@@ -90,28 +91,28 @@ const Home: React.FC = () => {
 
               {/* Huge Typography */}
               <div className="space-y-[-0.5rem] sm:space-y-[-1rem]">
-                <div className="overflow-hidden">
-                  <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-white tracking-tighter leading-[0.9] animate-slideUp delay-100 opacity-0 drop-shadow-2xl">
+                <div>
+                  <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-white tracking-tighter leading-[0.9] animate-blurInUp delay-100 opacity-0 drop-shadow-2xl">
                     {slides[currentSlide].title}
                   </h1>
                 </div>
-                <div className="overflow-hidden">
-                   <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-white to-green-300 tracking-tighter leading-[0.9] animate-slideUp delay-200 opacity-0 drop-shadow-2xl pb-2">
+                <div>
+                   <h1 className="text-6xl sm:text-8xl lg:text-[7.5rem] xl:text-[8.5rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-white to-green-300 tracking-tighter leading-[0.9] animate-blurInUp delay-200 opacity-0 drop-shadow-2xl pb-2">
                     {slides[currentSlide].highlight}
                   </h1>
                 </div>
               </div>
 
               {/* Description */}
-              <div className="overflow-hidden max-w-lg pt-2 sm:pt-4">
-                <p className="text-lg sm:text-xl text-gray-100 font-medium leading-relaxed animate-slideUp delay-300 opacity-0 border-l-2 border-white/30 pl-6 drop-shadow-md">
+              <div className="max-w-lg pt-2 sm:pt-4">
+                <p className="text-lg sm:text-xl text-gray-100 font-medium leading-relaxed animate-blurInUp delay-300 opacity-0 border-l-2 border-white/30 pl-6 drop-shadow-md">
                   {slides[currentSlide].description}
                 </p>
               </div>
               
               {/* Buttons */}
-              <div className="pt-6 sm:pt-8 overflow-hidden">
-                <div className="flex flex-wrap gap-6 animate-slideUp delay-400 opacity-0">
+              <div className="pt-6 sm:pt-8">
+                <div className="flex flex-wrap gap-6 animate-blurInUp delay-400 opacity-0">
                   <Link 
                     to="/lets-move"
                     className="group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-white text-gray-900 rounded-full overflow-hidden transition-all duration-500 ease-expo hover:bg-green-50 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
@@ -129,7 +130,7 @@ const Home: React.FC = () => {
 
         {/* Bottom Right Controls */}
         <div 
-          className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 z-20 flex flex-col items-end gap-6 pointer-events-auto"
+          className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 z-30 flex flex-col items-end gap-6 pointer-events-auto"
         >
           {/* Thumbnail Queue */}
           <div className="flex items-end gap-4 h-32 sm:h-44 md:h-56">

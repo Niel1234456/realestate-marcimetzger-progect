@@ -27,6 +27,7 @@
               blob: "blob 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)",
               fadeInUp: "fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               slideUp: "slideUp 1s cubic-bezier(0.19, 1, 0.22, 1) forwards",
+              blurInUp: "blurInUp 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               slideDown: "slideDown 0.6s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               progress: "progress 5s linear infinite",
               shimmer: "shimmer 2s infinite",
@@ -47,6 +48,10 @@
               slideUp: {
                 "0%": { transform: "translateY(100%)", opacity: "0" },
                 "100%": { transform: "translateY(0)", opacity: "1" },
+              },
+              blurInUp: {
+                "0%": { opacity: "0", transform: "translateY(60px)", filter: "blur(20px)" },
+                "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
               },
               slideDown: {
                 "0%": { transform: "translateY(-20px)", opacity: "0" },
