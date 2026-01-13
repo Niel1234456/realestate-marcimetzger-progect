@@ -118,7 +118,7 @@ const Home: React.FC = () => {
                     className="group relative inline-flex items-center justify-center px-8 py-4 sm:px-10 sm:py-5 bg-white text-gray-900 rounded-full overflow-hidden transition-all duration-500 ease-expo hover:bg-green-50 hover:scale-105 shadow-[0_0_20px_rgba(255,255,255,0.3)]"
                   >
                     <span className="relative flex items-center font-bold tracking-widest text-xs sm:text-sm uppercase">
-                      Discover <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      Explore <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </span>
                   </Link>
                 </div>
