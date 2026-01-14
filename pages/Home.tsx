@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight, Search, MapPin, Camera, CheckCircle, Building2, UserCheck, Layers, Sparkles } from 'lucide-react';
+import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, Search, MapPin, Camera, CheckCircle, Building2, UserCheck, Layers, Sparkles, Phone, Mail, Clock, ChevronDown, Send, User, MessageSquare } from 'lucide-react';
 
 // Unified small font label for all slides
 const BRAND_LABEL = "MARCI METZGER - THE RIDGE REALTY GROUP";
@@ -49,19 +49,22 @@ const services = [
     title: "Real Estate Done Right",
     icon: <Sparkles className="w-6 h-6" />,
     image: "https://img1.wsimg.com/isteam/stock/12792/:/rs=w:365,h:365,cg:true,m/cr=w:365,h:365/qt=q:70",
-    description: "Nervous about your property adventure? Don’t be. Whether you're getting ready to buy or sell your residence, looking at investment properties, or just curious about the markets, our team ensures you get the best experience possible!"
+    description: "Nervous about your property adventure? Don’t be. Whether you're getting ready to buy or sell your residence, looking at investment properties, or just curious about the markets, our team ensures you get the best experience possible!",
+    bgIcon: "https://cdn-icons-png.flaticon.com/512/1040/1040999.png"
   },
   {
     title: "Commercial & Residential",
     icon: <Layers className="w-6 h-6" />,
     image: "https://img1.wsimg.com/isteam/stock/43920/:/rs=w:365,h:365,cg:true,m/cr=w:365,h:365/qt=q:70",
-    description: "Large or small, condo or mansion, we can find it and get at the price that's right. Fixer-uppers? Luxury? We can help with all of it! We live, work, and play in this community. Happy to help you find where to put you hard-earned dollars."
+    description: "Large or small, condo or mansion, we can find it and get at the price that's right. Fixer-uppers? Luxury? We can help with all of it! We live, work, and play in this community. Happy to help you find where to put you hard-earned dollars.",
+    bgIcon: "https://cdn-icons-png.flaticon.com/512/895/895448.png"
   },
   {
     title: "Rely on Expertise",
     icon: <UserCheck className="w-6 h-6" />,
     image: "https://img1.wsimg.com/isteam/stock/kayaJdA/:/rs=w:365,h:365,cg:true,m/cr=w:365,h:365/qt=q:70",
-    description: "If you have questions about affordability, credit, and loan options, trust us to connect you with the right people to get the answers you need in a timely fashion. We make sure you feel confident and educated every step of the way."
+    description: "If you have questions about affordability, credit, and loan options, trust us to connect you with the right people to get the answers you need in a timely fashion. We make sure you feel confident and educated every step of the way.",
+    bgIcon: "https://cdn-icons-png.flaticon.com/512/9750/9750906.png"
   }
 ];
 
@@ -76,6 +79,14 @@ const galleryImages = [
 
 // Repeat logos to ensure seamless scroll even on wide screens
 const displayLogos = [...logos, ...logos, ...logos];
+
+// Social Media Links Data with High-Quality Icons
+const socialLinks = [
+  { name: "Facebook", url: "https://www.facebook.com/MarciHomes/", icon: "https://cdn-icons-png.flaticon.com/512/5968/5968764.png", color: "hover:shadow-blue-200" },
+  { name: "Instagram", url: "https://www.instagram.com/marciandlauren_nvrealtors/", icon: "https://cdn-icons-png.flaticon.com/512/15707/15707749.png", color: "hover:shadow-pink-200" },
+  { name: "Yelp", url: "https://www.yelp.com/biz/marci-metzger-the-ridge-realty-pahrump", icon: "https://cdn-icons-png.flaticon.com/512/3670/3670104.png", color: "hover:shadow-red-200" },
+  { name: "LinkedIn", url: "https://www.linkedin.com/in/marci-metzger-30642496/", icon: "https://cdn-icons-png.flaticon.com/512/4494/4494497.png", color: "hover:shadow-blue-200" }
+];
 
 // Mock Data for Search Suggestions
 const searchSuggestions = [
@@ -109,6 +120,17 @@ const searchOptions = {
   minPrice: ["No Min Price", "$100,000", "$200,000", "$300,000", "$400,000", "$500,000", "$600,000", "$800,000"],
   maxPrice: ["No Max Price", "$300,000", "$400,000", "$500,000", "$600,000", "$700,000", "$800,000", "$1,000,000+"]
 };
+
+// Office Hours Data
+const officeHours = [
+  { day: "Monday", hours: "08:00 am – 07:00 pm" },
+  { day: "Tuesday", hours: "08:00 am – 07:00 pm" },
+  { day: "Wednesday", hours: "08:00 am – 07:00 pm" },
+  { day: "Thursday", hours: "08:00 am – 07:00 pm" },
+  { day: "Friday", hours: "08:00 am – 07:00 pm" },
+  { day: "Saturday", hours: "08:00 am – 07:00 pm" },
+  { day: "Sunday", hours: "08:00 am – 07:00 pm" },
+];
 
 const CurvedGallery: React.FC = () => {
   const scrollRef = useRef(0);
@@ -247,6 +269,11 @@ const Home: React.FC = () => {
   const servicesRef = useRef<HTMLDivElement>(null);
   const [isServicesVisible, setIsServicesVisible] = useState(false);
 
+  // Intersection Observer for the 'Contact' section
+  const contactRef = useRef<HTMLDivElement>(null);
+  const [isContactVisible, setIsContactVisible] = useState(false);
+  const [isHoursOpen, setIsHoursOpen] = useState(false);
+
   // State for search input focus/dropdown
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -280,6 +307,9 @@ const Home: React.FC = () => {
           if (entry.target === servicesRef.current) {
              setIsServicesVisible(entry.isIntersecting);
           }
+          if (entry.target === contactRef.current) {
+             setIsContactVisible(entry.isIntersecting);
+          }
         });
       },
       { 
@@ -293,6 +323,7 @@ const Home: React.FC = () => {
     if (findHomeRef.current) observer.observe(findHomeRef.current);
     if (galleryRef.current) observer.observe(galleryRef.current);
     if (servicesRef.current) observer.observe(servicesRef.current);
+    if (contactRef.current) observer.observe(contactRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -978,6 +1009,13 @@ const Home: React.FC = () => {
                      }`}
                      style={{ transitionDelay: isServicesVisible ? `${index * 150}ms` : '0ms' }}
                   >
+                     {/* Background Icon Watermark */}
+                     <img 
+                        src={service.bgIcon} 
+                        alt="" 
+                        className="absolute -bottom-6 -right-6 w-40 h-40 object-contain opacity-5 group-hover:opacity-15 transition-all duration-700 ease-out z-0 pointer-events-none group-hover:scale-110 group-hover:-rotate-12 grayscale group-hover:grayscale-0"
+                     />
+
                      {/* Hover Gradient Overlay */}
                      <div className="absolute inset-0 bg-gradient-to-b from-green-50/0 via-green-50/0 to-green-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
@@ -1020,6 +1058,151 @@ const Home: React.FC = () => {
                ))}
             </div>
 
+         </div>
+      </section>
+
+      {/* ---------------- CALL OR VISIT SECTION ---------------- */}
+      <section ref={contactRef} className="py-8 lg:py-12 relative overflow-hidden bg-white border-t border-gray-100">
+         {/* Background Elements */}
+         <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.05),transparent_40%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent_40%)]"></div>
+            <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#000 0.5px, transparent 0.5px), linear-gradient(90deg, #000 0.5px, transparent 0.5px)', backgroundSize: '40px 40px' }}></div>
+         </div>
+         <div className="absolute top-10 right-10 w-24 h-24 border border-green-500/10 rounded-full animate-pulse delay-700 pointer-events-none"></div>
+         <div className="absolute bottom-10 left-10 w-32 h-32 border border-green-500/10 rounded-full animate-pulse pointer-events-none"></div>
+
+         <div className={`relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 transition-all duration-1000 ease-in-out transform ${isContactVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}>
+            
+             {/* NEW HEADER SECTION */}
+            <div className="text-center mb-6 max-w-3xl mx-auto">
+                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-100 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-4">
+                    <MapPin size={12} className="text-green-600 fill-green-100" />
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-green-800">Connect With Us</span>
+                 </div>
+                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-4 tracking-tight">
+                    Call or <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-700 relative z-10">Visit</span>
+                 </h2>
+                 <p className="text-gray-500 text-sm md:text-base max-w-lg mx-auto leading-relaxed">
+                    Ready to start your real estate journey? Our team is here to assist you every step of the way.
+                 </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+               
+               {/* Left Side: Contact Form & Info */}
+               <div className="lg:col-span-5 flex flex-col gap-6">
+                  
+                  {/* Contact Form Card */}
+                  <div className="bg-white rounded-[2rem] p-6 shadow-[0_20px_40px_-12px_rgba(0,0,0,0.1)] border border-gray-100 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-green-50 rounded-bl-full -mr-16 -mt-16 transition-transform duration-700 group-hover:scale-110"></div>
+                      <div className="absolute bottom-0 left-0 w-40 h-40 bg-emerald-50 rounded-tr-full -ml-10 -mb-10 transition-transform duration-700 group-hover:scale-110"></div>
+                      
+                      <div className="relative z-10">
+                         <div className="flex items-center gap-4 mb-4">
+                            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white shadow-lg shadow-green-200"><MessageSquare size={18} /></div>
+                            <div><span className="text-[9px] font-bold uppercase tracking-widest text-green-600 block mb-0.5">Get in touch</span><h2 className="text-2xl font-serif text-gray-900">Send <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-700 italic">Message</span></h2></div>
+                         </div>
+                         <form className="space-y-3">
+                            <div className="group/field relative">
+                               <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 ml-1 group-focus-within/field:text-green-600 transition-colors">Full Name</label>
+                               <div className="relative"><User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5 group-focus-within/field:text-green-600 transition-colors" /><input type="text" className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300" placeholder="e.g. John Doe" /></div>
+                            </div>
+                            <div className="group/field relative">
+                               <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 ml-1 group-focus-within/field:text-green-600 transition-colors">Email Address</label>
+                               <div className="relative"><Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5 group-focus-within/field:text-green-600 transition-colors" /><input type="email" className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300" placeholder="name@example.com" /></div>
+                            </div>
+                            <div className="group/field relative">
+                               <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 ml-1 group-focus-within/field:text-green-600 transition-colors">Your Message</label>
+                               <textarea rows={3} className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-2.5 px-4 text-gray-900 text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300 resize-none" placeholder="How can we help you?"></textarea>
+                            </div>
+                            <button className="w-full py-3 bg-gradient-to-r from-gray-900 to-black text-white rounded-xl font-bold tracking-widest uppercase text-[10px] hover:from-green-600 hover:to-emerald-700 transition-all duration-500 flex items-center justify-center gap-2 group/btn shadow-xl shadow-gray-200 hover:shadow-green-200/50 transform hover:-translate-y-1"><span>Send Message</span><Send className="w-3 h-3 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" /></button>
+                         </form>
+                      </div>
+                  </div>
+
+                  {/* Contact Info (Moved below form) */}
+                  <div className="bg-white rounded-[2rem] p-6 border border-gray-100/80">
+                     <div className="space-y-4">
+                         {/* Address & Phone */}
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                             <div className="group">
+                                <h3 className="text-[9px] font-bold text-green-600 tracking-[0.2em] uppercase mb-2 flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-green-500"></span> Visit Us</h3>
+                                <div className="flex items-start gap-3 text-gray-600">
+                                   <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 flex-shrink-0 group-hover:bg-green-50 group-hover:text-green-600 group-hover:border-green-200 transition-all duration-300"><MapPin size={16} /></div>
+                                   <div>
+                                      <h4 className="font-serif text-base text-gray-900 mb-0.5">Pahrump Office</h4>
+                                      <p className="leading-relaxed text-xs text-gray-500">3190 HW-160, Suite F,<br/>Pahrump, Nevada 89048</p>
+                                   </div>
+                                </div>
+                             </div>
+                             <div className="group">
+                                <h3 className="text-[9px] font-bold text-green-600 tracking-[0.2em] uppercase mb-2 flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-green-500"></span> Call Us</h3>
+                                <div className="flex items-start gap-3">
+                                   <div className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 flex-shrink-0 group-hover:bg-green-50 group-hover:text-green-600 group-hover:border-green-200 transition-all duration-300"><Phone size={16} /></div>
+                                   <div>
+                                      <h4 className="font-serif text-base text-gray-900 mb-0.5">Inquiries</h4>
+                                      <a href="tel:2069196886" className="text-sm text-gray-500 hover:text-green-600 transition-colors underline decoration-transparent hover:decoration-green-500">(206) 919-6886</a>
+                                   </div>
+                                </div>
+                             </div>
+                         </div>
+
+                         <div className="w-full h-px bg-gray-100"></div>
+
+                         {/* Hours & Social */}
+                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                             <div>
+                                <h3 className="text-[9px] font-bold text-green-600 tracking-[0.2em] uppercase mb-2 flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-green-500"></span> Office Hours</h3>
+                                <div className="bg-gray-50/50 rounded-lg border border-gray-100">
+                                   <button onClick={() => setIsHoursOpen(!isHoursOpen)} className="w-full flex items-center justify-between p-2.5 hover:bg-white rounded-lg transition-all duration-300 group">
+                                      <div className="flex items-center gap-2"><Clock size={14} className="text-gray-400 group-hover:text-green-600" /><span className="font-bold text-gray-900 text-[10px] uppercase tracking-wide">View Hours</span></div>
+                                      <ChevronDown className={`w-3 h-3 text-gray-400 transition-transform duration-300 ${isHoursOpen ? 'rotate-180' : ''}`} />
+                                   </button>
+                                   <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isHoursOpen ? 'max-h-[300px] border-t border-gray-100' : 'max-h-0'}`}>
+                                      <div className="p-3 space-y-1.5">
+                                         {officeHours.map((item, idx) => (
+                                            <div key={idx} className="flex justify-between text-[10px] text-gray-500"><span className="font-medium">{item.day}</span><span>{item.hours}</span></div>
+                                         ))}
+                                      </div>
+                                   </div>
+                                </div>
+                             </div>
+                             <div>
+                                <h3 className="text-[9px] font-bold text-green-600 tracking-[0.2em] uppercase mb-2 flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-green-500"></span> Connect</h3>
+                                <div className="flex gap-2">
+                                   {socialLinks.map((item, idx) => (
+                                      <a key={idx} href={item.url} target="_blank" rel="noopener noreferrer" className={`w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center bg-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:-translate-y-1 ${item.color}`} title={item.name}><img src={item.icon} alt={item.name} className="w-4 h-4 object-contain" /></a>
+                                   ))}
+                                </div>
+                             </div>
+                         </div>
+                     </div>
+                  </div>
+               </div>
+
+               {/* Right Side: Vertical Map (Full Height) */}
+               <div className="lg:col-span-7 h-full min-h-[400px] lg:min-h-0 relative">
+                  <div className="absolute inset-0 bg-white rounded-[2rem] shadow-2xl border border-gray-100 overflow-hidden group">
+                      <iframe width="100%" height="100%" id="gmap_canvas" src="https://maps.google.com/maps?q=3190%20HW-160,%20Suite%20F,%20Pahrump,%20Nevada%2089048,%20United%20States&t=&z=15&ie=UTF8&iwloc=&output=embed" frameBorder="0" scrolling="no" marginHeight={0} marginWidth={0} className="w-full h-full transition-all duration-700" title="Ridge Realty Location"></iframe>
+                      
+                      {/* Interactive Overlay on Map */}
+                      <div className="absolute bottom-6 left-6 right-6 p-4 bg-white/95 backdrop-blur-xl rounded-2xl shadow-lg border border-white/50 flex items-center justify-between transform translate-y-2 opacity-90 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                          <div className="flex items-center gap-4">
+                             <div className="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center text-green-600"><MapPin size={20} /></div>
+                             <div>
+                                <p className="text-[10px] font-bold uppercase tracking-wider text-gray-400">Locate Us</p>
+                                <p className="text-sm font-bold text-gray-900">Ridge Realty Group</p>
+                             </div>
+                          </div>
+                          <a href="https://www.google.com/maps/search/?api=1&query=3190+HW-160,+Suite+F,+Pahrump,+Nevada+89048" target="_blank" rel="noreferrer" className="px-4 py-2 bg-black text-white text-xs font-bold uppercase tracking-widest rounded-full hover:bg-green-600 transition-colors">Open Map</a>
+                      </div>
+                  </div>
+                  {/* Decorative blobs behind map */}
+                  <div className="absolute -top-10 -right-10 w-40 h-40 bg-green-100 rounded-full blur-3xl -z-10 opacity-50"></div>
+                  <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-100 rounded-full blur-3xl -z-10 opacity-50"></div>
+               </div>
+
+            </div>
          </div>
       </section>
 
