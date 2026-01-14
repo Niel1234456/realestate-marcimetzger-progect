@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight, Search, MapPin, Camera } from 'lucide-react';
+import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight, Search, MapPin, Camera, CheckCircle, Building2, UserCheck, Layers, Sparkles } from 'lucide-react';
 
 // Unified small font label for all slides
 const BRAND_LABEL = "MARCI METZGER - THE RIDGE REALTY GROUP";
@@ -44,6 +44,27 @@ const logos = [
   "https://img1.wsimg.com/isteam/ip/067a4d42-19e8-46d9-9bed-578bf62dd44e/Chamber.jpg/:/rs=w:200,h:200,cg:true,m/cr=w:200,h:200"
 ];
 
+const services = [
+  {
+    title: "Real Estate Done Right",
+    icon: <Sparkles className="w-6 h-6" />,
+    image: "https://img1.wsimg.com/isteam/stock/12792/:/rs=w:365,h:365,cg:true,m/cr=w:365,h:365/qt=q:70",
+    description: "Nervous about your property adventure? Don’t be. Whether you're getting ready to buy or sell your residence, looking at investment properties, or just curious about the markets, our team ensures you get the best experience possible!"
+  },
+  {
+    title: "Commercial & Residential",
+    icon: <Layers className="w-6 h-6" />,
+    image: "https://img1.wsimg.com/isteam/stock/43920/:/rs=w:365,h:365,cg:true,m/cr=w:365,h:365/qt=q:70",
+    description: "Large or small, condo or mansion, we can find it and get at the price that's right. Fixer-uppers? Luxury? We can help with all of it! We live, work, and play in this community. Happy to help you find where to put you hard-earned dollars."
+  },
+  {
+    title: "Rely on Expertise",
+    icon: <UserCheck className="w-6 h-6" />,
+    image: "https://img1.wsimg.com/isteam/stock/kayaJdA/:/rs=w:365,h:365,cg:true,m/cr=w:365,h:365/qt=q:70",
+    description: "If you have questions about affordability, credit, and loan options, trust us to connect you with the right people to get the answers you need in a timely fashion. We make sure you feel confident and educated every step of the way."
+  }
+];
+
 const galleryImages = [
   "https://scontent.fmnl25-5.fna.fbcdn.net/v/t39.30808-6/548269509_1333343485415981_2827082723537900492_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=zU4a7d62iKUQ7kNvwH7UdI_&_nc_oc=AdkfvaijsTQ_xA0kjp9FSkSDgZ4IPRG88Wub5LPAQsdZ8ihO2osJ3DM97fJdTTrQs6PFZPixtQPbqiF0JqCTlv2H&_nc_zt=23&_nc_ht=scontent.fmnl25-5.fna&_nc_gid=-nKu4f4p1DU0F7Gp-PTkhg&oh=00_AfpN0jc99BW0wJN3Ulc-pw3JzV0aN8fO7rVXTAVthBJJjw&oe=696D4F12",
   "https://scontent.fmnl25-4.fna.fbcdn.net/v/t39.30808-6/490653698_1201921425224855_1496396098191417700_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=f5G3kC65tjsQ7kNvwF8r4i4&_nc_oc=AdnRYb-AjnCCxH_CH_BmgsNNK0nrez5V12KCxTZ0hQc3KCv5s56k5XaHxajtzPtKfQ9KQlBGmw-cj1INN-nSdXhO&_nc_zt=23&_nc_ht=scontent.fmnl25-4.fna&_nc_gid=niW_ZNCRZFaspNHbHvzSEQ&oh=00_AfpIFWfM_ZoitbxeIH7R9OCFRECFQ5pmd5fBc2IiV-Q-xg&oe=696D6708",
@@ -77,7 +98,7 @@ const searchOptions = {
     "Summerlin, NV", 
     "Boulder City, NV", 
     "Mesquite, NV", 
-    "Mt Charleston, NV",
+    "Mt Charleston, NV", 
     "Blue Diamond, NV",
     "Enterprise, NV"
   ],
@@ -222,6 +243,10 @@ const Home: React.FC = () => {
   const galleryRef = useRef<HTMLDivElement>(null);
   const [isGalleryVisible, setIsGalleryVisible] = useState(false);
 
+  // Intersection Observer for the 'Services' section
+  const servicesRef = useRef<HTMLDivElement>(null);
+  const [isServicesVisible, setIsServicesVisible] = useState(false);
+
   // State for search input focus/dropdown
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -252,6 +277,9 @@ const Home: React.FC = () => {
           if (entry.target === galleryRef.current) {
              setIsGalleryVisible(entry.isIntersecting);
           }
+          if (entry.target === servicesRef.current) {
+             setIsServicesVisible(entry.isIntersecting);
+          }
         });
       },
       { 
@@ -264,6 +292,7 @@ const Home: React.FC = () => {
     if (soldSectionRef.current) observer.observe(soldSectionRef.current);
     if (findHomeRef.current) observer.observe(findHomeRef.current);
     if (galleryRef.current) observer.observe(galleryRef.current);
+    if (servicesRef.current) observer.observe(servicesRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -879,6 +908,118 @@ const Home: React.FC = () => {
 
              {/* Continuous Curve Slider */}
              <CurvedGallery />
+         </div>
+      </section>
+
+      {/* ---------------- OUR SERVICES SECTION (New) ---------------- */}
+      <section ref={servicesRef} className="py-10 lg:py-14 relative overflow-hidden bg-white">
+         {/* 1. Sophisticated Background */}
+         <div className="absolute inset-0 pointer-events-none">
+            {/* Base gradient */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(34,197,94,0.05),transparent_40%),radial-gradient(circle_at_bottom_left,rgba(16,185,129,0.05),transparent_40%)]"></div>
+            
+            {/* Architectural Grid - Blueprint feel */}
+            <div className="absolute inset-0 opacity-[0.03]" 
+                 style={{ 
+                     backgroundImage: 'linear-gradient(#000 0.5px, transparent 0.5px), linear-gradient(90deg, #000 0.5px, transparent 0.5px)', 
+                     backgroundSize: '40px 40px' 
+                 }}>
+            </div>
+         </div>
+
+         {/* 2. Modern Decorative Accents */}
+         {/* Spinning Dashed Ring (Compass abstract) */}
+         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[600px] h-[600px] border border-dashed border-green-200/40 rounded-full animate-spin-slow pointer-events-none" style={{ animationDuration: '60s' }}></div>
+         <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/3 w-[500px] h-[500px] border border-green-100/30 rounded-full pointer-events-none"></div>
+
+         {/* Geometric Shapes */}
+         <div className="absolute top-24 left-10 w-16 h-16 border-2 border-green-500/10 rotate-12 rounded-2xl pointer-events-none animate-float"></div>
+         <div className="absolute bottom-12 left-1/4 w-2 h-24 bg-gradient-to-b from-green-200/50 to-transparent pointer-events-none"></div>
+         <div className="absolute bottom-24 right-12 flex gap-2 opacity-20 pointer-events-none">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse delay-150"></div>
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse delay-300"></div>
+         </div>
+
+         {/* Soft Glow behind header */}
+         <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-gradient-to-r from-green-50/50 via-emerald-50/30 to-transparent blur-[80px] pointer-events-none"></div>
+
+         <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            
+            {/* Section Header */}
+            <div className={`text-center mb-8 max-w-3xl mx-auto relative transition-all duration-1000 ease-out ${isServicesVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-100 bg-white shadow-[0_2px_10px_rgba(0,0,0,0.03)] mb-4">
+                  <Sparkles size={12} className="text-green-600 fill-green-100" />
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-green-800">Elite Standards</span>
+               </div>
+               <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 mb-3 tracking-tight">
+                  Exceptional <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-emerald-700 relative z-10">Services</span>
+               </h2>
+               
+               <div className="flex flex-col items-center mt-2">
+                  <div className="h-px w-16 bg-gradient-to-r from-transparent via-green-400 to-transparent mb-4 opacity-50"></div>
+                  <p className="text-gray-600 font-medium text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                    <span className="text-gray-400 font-serif italic mr-1">"</span>
+                    Tailored real estate solutions designed to <span className="text-green-700 border-b border-green-200 pb-0.5">elevate your experience</span>.
+                    <span className="text-gray-400 font-serif italic ml-1">"</span>
+                  </p>
+               </div>
+            </div>
+
+            {/* Services Grid with Staggered Zoom Transition */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 lg:gap-6">
+               {services.map((service, index) => (
+                  <div 
+                     key={index}
+                     className={`group relative bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden flex flex-col h-full transform transition-all duration-700 ease-elastic hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(34,197,94,0.1)] ${
+                        isServicesVisible 
+                        ? 'opacity-100 scale-100 translate-y-0' 
+                        : 'opacity-0 scale-75 translate-y-20'
+                     }`}
+                     style={{ transitionDelay: isServicesVisible ? `${index * 150}ms` : '0ms' }}
+                  >
+                     {/* Hover Gradient Overlay */}
+                     <div className="absolute inset-0 bg-gradient-to-b from-green-50/0 via-green-50/0 to-green-50/30 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                     {/* Image Container */}
+                     <div className="relative h-48 overflow-hidden m-1.5 rounded-[1.2rem]">
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors duration-500 z-10"></div>
+                        <img 
+                           src={service.image} 
+                           alt={service.title} 
+                           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                        />
+                        
+                        {/* Modern Glass Icon Badge */}
+                        <div className="absolute top-3 right-3 w-10 h-10 bg-white/30 backdrop-blur-md border border-white/50 rounded-xl flex items-center justify-center text-white shadow-lg z-20 group-hover:bg-green-600 group-hover:border-green-500 transition-all duration-300">
+                           {React.cloneElement(service.icon as React.ReactElement, { size: 18 })}
+                        </div>
+                     </div>
+
+                     {/* Content */}
+                     <div className="p-6 flex-grow flex flex-col relative z-20">
+                        <div className="mb-3 flex items-baseline gap-2">
+                           <span className="text-[10px] font-bold text-green-600/60 uppercase tracking-widest">0{index + 1}</span>
+                           <h3 className="text-xl font-serif font-bold text-gray-900 group-hover:text-green-700 transition-colors duration-300">
+                              {service.title}
+                           </h3>
+                        </div>
+                        
+                        <p className="text-gray-500 text-xs leading-relaxed mb-4 flex-grow border-l-2 border-gray-100 pl-3 group-hover:border-green-300 transition-colors duration-300">
+                           {service.description}
+                        </p>
+                        
+                        <div className="mt-auto flex items-center justify-between">
+                           <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400 group-hover:text-gray-900 transition-colors">Details</span>
+                           <div className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-gray-400 group-hover:border-green-500 group-hover:text-green-600 group-hover:bg-green-50 transition-all duration-300">
+                              <ArrowRight size={12} />
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               ))}
+            </div>
+
          </div>
       </section>
 
