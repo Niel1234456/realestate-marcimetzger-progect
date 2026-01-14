@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight, Search, MapPin } from 'lucide-react';
+import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight, Search, MapPin, Camera } from 'lucide-react';
 
 // Unified small font label for all slides
 const BRAND_LABEL = "MARCI METZGER - THE RIDGE REALTY GROUP";
@@ -44,6 +44,15 @@ const logos = [
   "https://img1.wsimg.com/isteam/ip/067a4d42-19e8-46d9-9bed-578bf62dd44e/Chamber.jpg/:/rs=w:200,h:200,cg:true,m/cr=w:200,h:200"
 ];
 
+const galleryImages = [
+  "https://scontent.fmnl25-5.fna.fbcdn.net/v/t39.30808-6/548269509_1333343485415981_2827082723537900492_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=zU4a7d62iKUQ7kNvwH7UdI_&_nc_oc=AdkfvaijsTQ_xA0kjp9FSkSDgZ4IPRG88Wub5LPAQsdZ8ihO2osJ3DM97fJdTTrQs6PFZPixtQPbqiF0JqCTlv2H&_nc_zt=23&_nc_ht=scontent.fmnl25-5.fna&_nc_gid=-nKu4f4p1DU0F7Gp-PTkhg&oh=00_AfpN0jc99BW0wJN3Ulc-pw3JzV0aN8fO7rVXTAVthBJJjw&oe=696D4F12",
+  "https://scontent.fmnl25-4.fna.fbcdn.net/v/t39.30808-6/490653698_1201921425224855_1496396098191417700_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=127cfc&_nc_ohc=f5G3kC65tjsQ7kNvwF8r4i4&_nc_oc=AdnRYb-AjnCCxH_CH_BmgsNNK0nrez5V12KCxTZ0hQc3KCv5s56k5XaHxajtzPtKfQ9KQlBGmw-cj1INN-nSdXhO&_nc_zt=23&_nc_ht=scontent.fmnl25-4.fna&_nc_gid=niW_ZNCRZFaspNHbHvzSEQ&oh=00_AfpIFWfM_ZoitbxeIH7R9OCFRECFQ5pmd5fBc2IiV-Q-xg&oe=696D6708",
+  "https://scontent.fmnl25-6.fna.fbcdn.net/v/t39.30808-6/490885175_1201818635235134_6999460516769562170_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=127cfc&_nc_ohc=TFnC8OrvXm0Q7kNvwGEybzi&_nc_oc=AdmRnyII9pYiUYqwaQhgtcBD_mvGXd7x5Tencd8ZAHcNxYxCrTfcjvRTKY4yYCSqydZ0Z_6NJ3F3_LTCt_IimUJw&_nc_zt=23&_nc_ht=scontent.fmnl25-6.fna&_nc_gid=lFYZX4B7QsdLdm9fySOLQQ&oh=00_AfpDrnHAz88xE4P24jWUs6R9WSgjMmxmt2cAElW0aeGbwQ&oe=696D7228",
+  "https://s3-media0.fl.yelpcdn.com/bphoto/RHFYhbTYb9hNAjJGhOp6Qw/o.jpg",
+  "https://s3-media0.fl.yelpcdn.com/bphoto/h64xNKaxZGxne429Pfcgfg/o.jpg",
+  "https://photos.zillowstatic.com/fp/46c73919ea0db10bc51d4883cf04d265-cc_ft_960.webp"
+];
+
 // Repeat logos to ensure seamless scroll even on wide screens
 const displayLogos = [...logos, ...logos, ...logos];
 
@@ -80,6 +89,120 @@ const searchOptions = {
   maxPrice: ["No Max Price", "$300,000", "$400,000", "$500,000", "$600,000", "$700,000", "$800,000", "$1,000,000+"]
 };
 
+const CurvedGallery: React.FC = () => {
+  const scrollRef = useRef(0);
+  const requestRef = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  // 3 sets of images for seamless loop
+  const displayImages = [...galleryImages, ...galleryImages, ...galleryImages]; 
+  
+  // Responsive item width
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+  const itemWidth = isMobile ? 180 : 280; // Reduced size
+  const gap = isMobile ? 15 : 30;
+  const totalItemWidth = itemWidth + gap;
+  const totalWidth = galleryImages.length * totalItemWidth; // Width of ONE set
+
+  useEffect(() => {
+    let lastTime = 0;
+    const speed = 0.6; // Slightly slower for elegance
+
+    const animate = (time: number) => {
+      if (!containerRef.current) return;
+      
+      scrollRef.current += speed; 
+      
+      // Reset logic for infinite loop
+      if (scrollRef.current >= totalWidth) {
+        scrollRef.current = 0;
+      }
+
+      const centerX = window.innerWidth / 2;
+      const screenWidth = window.innerWidth;
+
+      itemsRef.current.forEach((item, index) => {
+        if (!item) return;
+
+        let xPos = (index * totalItemWidth) - scrollRef.current;
+        const itemCenter = xPos + itemWidth / 2;
+        
+        // Normalized distance from center (-1 to 1 based on half screen width)
+        const distNorm = (itemCenter - centerX) / (screenWidth * 0.55);
+        
+        // Math for Straight-to-Curved Transition
+        // Center zone is flatter, edges curve away rapidly
+        const absNorm = Math.abs(distNorm);
+        
+        // Z-Translation: Move back significantly at edges (Convex/Cylinder effect)
+        // Using power function to keep center straighter
+        const z = -Math.pow(absNorm, 2) * (isMobile ? 150 : 300);
+        
+        // Rotation: Rotate inward to face center
+        // Left side (dist < 0) rotates positive Y (faces right/in)
+        // Right side (dist > 0) rotates negative Y (faces left/in)
+        const rotateY = -distNorm * (isMobile ? 25 : 35);
+
+        // Opacity: Fade edges slightly
+        const opacity = Math.max(0.2, 1 - Math.pow(absNorm, 3));
+
+        item.style.transform = `translate3d(${xPos}px, 0, ${z}px) rotateY(${rotateY}deg)`;
+        item.style.opacity = opacity.toString();
+        // Z-Index is critical for 3D overlap handling
+        item.style.zIndex = (1000 - Math.floor(absNorm * 100)).toString();
+      });
+
+      requestRef.current = requestAnimationFrame(animate);
+    };
+
+    requestRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(requestRef.current!);
+  }, [totalWidth, itemWidth, gap, isMobile]);
+
+  return (
+    <div 
+      ref={containerRef} 
+      className="relative w-full h-[320px] md:h-[450px] overflow-hidden select-none"
+      style={{ perspective: '1200px' }} // Critical for 3D effect
+    >
+       {/* Gradient Overlays for smooth entry/exit - Light Theme */}
+       <div className="absolute top-0 left-0 w-1/5 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-50 pointer-events-none"></div>
+       <div className="absolute top-0 right-0 w-1/5 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-50 pointer-events-none"></div>
+
+       {displayImages.map((img, i) => (
+          <div
+            key={i}
+            ref={el => itemsRef.current[i] = el}
+            className="absolute top-2 left-0 rounded-2xl overflow-hidden shadow-2xl border border-gray-100 origin-center bg-white"
+            style={{ 
+              width: `${itemWidth}px`,
+              aspectRatio: '3/4',
+              willChange: 'transform, opacity',
+              transformStyle: 'preserve-3d', // Ensure children don't flatten
+            }}
+          >
+             <img 
+               src={img} 
+               alt={`Gallery ${i}`} 
+               className="w-full h-full object-cover pointer-events-none" 
+               loading="eager"
+             />
+             {/* Gradient for text readability */}
+             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+             
+             {/* Text Content with slight parallax feel via translation */}
+             <div className="absolute bottom-0 left-0 right-0 p-6 translate-z-10">
+                <div className="h-0.5 w-8 bg-green-400 mb-2"></div>
+                <div className="text-[10px] text-green-300 font-bold tracking-widest uppercase mb-1">Featured</div>
+                <div className="text-white font-serif text-xl italic opacity-90">Residence</div>
+             </div>
+          </div>
+       ))}
+    </div>
+  );
+};
+
 const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   
@@ -94,6 +217,10 @@ const Home: React.FC = () => {
   // Intersection Observer for the 'Find Your Dream Home' section
   const findHomeRef = useRef<HTMLDivElement>(null);
   const [isFindHomeVisible, setIsFindHomeVisible] = useState(false);
+
+  // Intersection Observer for the 'Gallery' section
+  const galleryRef = useRef<HTMLDivElement>(null);
+  const [isGalleryVisible, setIsGalleryVisible] = useState(false);
 
   // State for search input focus/dropdown
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -122,6 +249,9 @@ const Home: React.FC = () => {
           if (entry.target === findHomeRef.current) {
              setIsFindHomeVisible(entry.isIntersecting);
           }
+          if (entry.target === galleryRef.current) {
+             setIsGalleryVisible(entry.isIntersecting);
+          }
         });
       },
       { 
@@ -133,6 +263,7 @@ const Home: React.FC = () => {
     if (aboutSectionRef.current) observer.observe(aboutSectionRef.current);
     if (soldSectionRef.current) observer.observe(soldSectionRef.current);
     if (findHomeRef.current) observer.observe(findHomeRef.current);
+    if (galleryRef.current) observer.observe(galleryRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -600,38 +731,38 @@ const Home: React.FC = () => {
       </section>
 
       {/* ---------------- FIND YOUR DREAM HOME SECTION ---------------- */}
-      <section ref={findHomeRef} className="relative py-20 lg:py-28 overflow-hidden bg-white">
+      <section ref={findHomeRef} className="relative py-4 lg:py-6 overflow-hidden bg-white">
          {/* Decorative Background Blobs - Light Theme */}
          <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
              <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-green-100/40 rounded-full blur-[80px]"></div>
              <div className="absolute top-[20%] right-[10%] w-[30%] h-[60%] bg-emerald-50/60 rounded-full blur-[100px] rotate-12"></div>
          </div>
 
-         <div className="relative z-10 max-w-7xl mx-auto px-6">
+         <div className="relative z-10 w-full px-2 sm:px-4">
             
-            <div className={`bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col lg:flex-row transition-all duration-1000 ease-expo ${isFindHomeVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'}`}>
+            <div className={`bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col lg:flex-row transition-all duration-[1200ms] ease-out transform ${isFindHomeVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-90'}`}>
                
                {/* Left Side - Search Interface (50% Width) */}
-               <div className="lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+               <div className="lg:w-1/2 p-5 md:p-6 lg:p-8 flex flex-col justify-center">
                   
-                  <div className="mb-8">
-                     <span className="inline-block py-1 px-3 rounded-full bg-green-50 border border-green-100 text-green-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-3">
+                  <div className="mb-3">
+                     <span className="inline-block py-0.5 px-2 rounded-full bg-green-50 border border-green-100 text-green-700 text-[9px] font-bold tracking-[0.2em] uppercase mb-1">
                        Exclusive Listings
                      </span>
-                     <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-3">
+                     <h2 className="text-2xl md:text-4xl font-serif text-gray-900 mb-1">
                        Find Your <span className="text-green-600 italic">Dream Home</span>
                      </h2>
-                     <p className="text-gray-500 text-sm md:text-base max-w-lg">
-                       Browse our curated selection of premium properties. Filter by location, price, and amenities to find the perfect match.
+                     <p className="text-gray-500 text-xs md:text-sm max-w-lg">
+                       Browse our curated selection of premium properties.
                      </p>
                   </div>
 
                   {/* Search Form */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
                      
                      {/* Main Search Input - Full Width in this column */}
-                     <div className="md:col-span-2 group relative z-50 mb-2">
-                        <label className="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 ml-1 group-focus-within:text-green-600 transition-colors">Search Listing</label>
+                     <div className="md:col-span-2 group relative z-50 mb-0.5">
+                        <label className="block text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 ml-1 group-focus-within:text-green-600 transition-colors">Search Listing</label>
                         <div className="relative">
                            <input 
                              type="text" 
@@ -640,9 +771,9 @@ const Home: React.FC = () => {
                              onFocus={() => setIsSearchFocused(true)}
                              onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)} // Delay close to allow clicks
                              placeholder="Enter address, city, zip code, or MLS number..." 
-                             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 pl-12 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 relative z-20" 
+                             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pl-10 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 relative z-20" 
                            />
-                           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors z-20" size={20} />
+                           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors z-20" size={16} />
                            
                            {/* Search Suggestions Dropdown */}
                            {isSearchFocused && (
@@ -680,15 +811,15 @@ const Home: React.FC = () => {
                      <SelectFieldLight label="Max Price" options={searchOptions.maxPrice} delay={300} isVisible={isFindHomeVisible} />
 
                      {/* Search Button - Full width on mobile, auto on desktop */}
-                     <div className="md:col-span-1 flex items-end mt-4 md:mt-0">
-                        <button className="w-full h-[52px] bg-green-600 hover:bg-green-700 text-white font-bold text-sm tracking-widest uppercase rounded-xl shadow-lg shadow-green-200 hover:shadow-green-300 transition-all duration-300 flex items-center justify-center gap-3 group transform hover:-translate-y-0.5 active:scale-95">
+                     <div className="md:col-span-1 flex items-end mt-2 md:mt-0">
+                        <button className="w-full h-[46px] bg-green-600 hover:bg-green-700 text-white font-bold text-xs tracking-widest uppercase rounded-xl shadow-lg shadow-green-200 hover:shadow-green-300 transition-all duration-300 flex items-center justify-center gap-2 group transform hover:-translate-y-0.5 active:scale-95">
                            <span>Search</span>
-                           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                           <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                         </button>
                      </div>
                   </div>
 
-                  <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap justify-between items-center gap-4 text-xs font-medium text-gray-500">
+                  <div className="mt-3 pt-3 border-t border-gray-100 flex flex-wrap justify-between items-center gap-3 text-[10px] font-medium text-gray-500">
                      <div className="flex gap-4">
                         <a href="#" className="hover:text-green-600 transition-colors underline decoration-transparent hover:decoration-green-600 underline-offset-4">Advanced Search</a>
                         <a href="#" className="hover:text-green-600 transition-colors underline decoration-transparent hover:decoration-green-600 underline-offset-4">Map Search</a>
@@ -701,9 +832,9 @@ const Home: React.FC = () => {
                </div>
 
                {/* Right Side - Image (50% Width) */}
-               <div className="lg:w-1/2 relative min-h-[300px] lg:min-h-full overflow-hidden group">
+               <div className="lg:w-1/2 relative min-h-[250px] lg:min-h-full overflow-hidden group">
                   <img 
-                    src="https://img1.wsimg.com/isteam/stock/107927/:/rs=w:1200,h:600,cg:true,m/cr=w:1200,h:600" 
+                    src="https://ssl.cdn-redfin.com/photo/95/bigphoto/101/2264101_2.jpg" 
                     alt="Dream Home" 
                     className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
                   />
@@ -719,6 +850,35 @@ const Home: React.FC = () => {
 
             </div>
 
+         </div>
+      </section>
+
+      {/* ---------------- PHOTO GALLERY SECTION ---------------- */}
+      <section ref={galleryRef} className="relative py-16 lg:py-20 overflow-hidden bg-white">
+         {/* Decorative Background Blobs */}
+         <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+             <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-green-100/40 rounded-full blur-[80px]"></div>
+             <div className="absolute top-[20%] right-[10%] w-[30%] h-[60%] bg-emerald-50/60 rounded-full blur-[100px] rotate-12"></div>
+         </div>
+         
+         <div className={`relative z-10 w-full transition-all duration-[1000ms] ease-out transform ${isGalleryVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}>
+             
+             {/* Header */}
+             <div className="max-w-7xl mx-auto px-6 mb-8 relative z-10 text-center">
+                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-gray-200 bg-gray-50/80 backdrop-blur-sm mb-2">
+                    <Camera size={14} className="text-green-600" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500">Visual Experience</span>
+                 </div>
+                 <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif text-gray-900">
+                    Photo <span className="font-serif italic text-green-600">Gallery</span>
+                 </h2>
+                 <p className="mt-2 text-gray-500 text-sm max-w-lg mx-auto">
+                    Explore the luxury and comfort of our featured properties through this interactive gallery.
+                 </p>
+             </div>
+
+             {/* Continuous Curve Slider */}
+             <CurvedGallery />
          </div>
       </section>
 
@@ -748,16 +908,16 @@ const SelectField = ({ label, options, delay, isVisible }: { label: string, opti
 // Helper Component for Select Fields (Light Theme)
 const SelectFieldLight = ({ label, options, delay, isVisible }: { label: string, options: string[], delay: number, isVisible: boolean }) => (
    <div className={`group transition-all duration-700 ease-out`} style={{ transitionDelay: `${delay}ms`, opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(10px)' }}>
-      <label className="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 ml-1 group-focus-within:text-green-600 transition-colors">{label}</label>
+      <label className="block text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 ml-1 group-focus-within:text-green-600 transition-colors">{label}</label>
       <div className="relative">
-         <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-gray-900 appearance-none focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 cursor-pointer shadow-sm hover:border-green-200">
+         <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 appearance-none focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 cursor-pointer shadow-sm hover:border-green-200">
             {options.map((opt, i) => (
                <option key={i} value={opt} className="bg-white text-gray-900">{opt}</option>
             ))}
          </select>
          {/* Custom Arrow Icon */}
-         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-green-600 transition-colors">
-            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+         <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-green-600 transition-colors">
+            <svg width="8" height="5" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
          </div>
