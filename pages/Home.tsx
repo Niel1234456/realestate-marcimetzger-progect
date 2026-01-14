@@ -1062,7 +1062,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* ---------------- CALL OR VISIT SECTION ---------------- */}
-      <section ref={contactRef} className="py-8 lg:py-12 relative overflow-hidden bg-white border-t border-gray-100">
+      <section ref={contactRef} className="py-6 lg:py-10 relative overflow-hidden bg-white border-t border-gray-100">
          {/* Background Elements */}
          <div className="absolute inset-0 pointer-events-none">
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(34,197,94,0.05),transparent_40%),radial-gradient(circle_at_top_right,rgba(16,185,129,0.05),transparent_40%)]"></div>
@@ -1071,7 +1071,7 @@ const Home: React.FC = () => {
          <div className="absolute top-10 right-10 w-24 h-24 border border-green-500/10 rounded-full animate-pulse delay-700 pointer-events-none"></div>
          <div className="absolute bottom-10 left-10 w-32 h-32 border border-green-500/10 rounded-full animate-pulse pointer-events-none"></div>
 
-         <div className={`relative z-10 max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 transition-all duration-1000 ease-in-out transform ${isContactVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}>
+         <div className={`relative z-10 max-w-[90rem] mx-auto px-6 sm:px-8 lg:px-12 transition-all duration-1000 ease-in-out transform ${isContactVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-20 scale-95'}`}>
             
              {/* NEW HEADER SECTION */}
             <div className="text-center mb-6 max-w-3xl mx-auto">

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Activity, Search } from 'lucide-react';
@@ -47,6 +48,14 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { path: '/', label: 'Home' },
     { path: '/lets-move', label: "Let's Move" },
     { path: '/about', label: 'About' }
+  ];
+
+  // Social Media Links Data matching Home page
+  const socialLinks = [
+    { name: "Facebook", url: "https://www.facebook.com/MarciHomes/", icon: "https://cdn-icons-png.flaticon.com/512/5968/5968764.png", color: "hover:shadow-blue-200" },
+    { name: "Instagram", url: "https://www.instagram.com/marciandlauren_nvrealtors/", icon: "https://cdn-icons-png.flaticon.com/512/15707/15707749.png", color: "hover:shadow-pink-200" },
+    { name: "Yelp", url: "https://www.yelp.com/biz/marci-metzger-the-ridge-realty-pahrump", icon: "https://cdn-icons-png.flaticon.com/512/3670/3670104.png", color: "hover:shadow-red-200" },
+    { name: "LinkedIn", url: "https://www.linkedin.com/in/marci-metzger-30642496/", icon: "https://cdn-icons-png.flaticon.com/512/4494/4494497.png", color: "hover:shadow-blue-200" }
   ];
 
   return (
@@ -164,20 +173,69 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </main>
 
-      {/* Footer (Hidden on Home for immersive effect) */}
-      {!isHome && (
-        <footer className="bg-white border-t border-gray-100 py-12 mt-12">
-          <div className="max-w-7xl mx-auto px-6 text-center animate-fadeInUp">
-            <div className="flex justify-center items-center gap-2 mb-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
-               <Activity className="h-5 w-5 text-green-600" />
-               <span className="font-bold text-gray-900">Ridge Realty</span>
+      {/* Footer */}
+      <footer className="bg-gradient-to-b from-white via-green-50 to-green-100/30 border-t border-green-100 pt-20 pb-10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
+            
+            {/* Brand Column */}
+            <div className="space-y-6">
+              <div className="flex items-center gap-2 group">
+                <div className="p-2.5 bg-green-600 rounded-full text-white shadow-lg shadow-green-200 group-hover:scale-110 transition-transform">
+                  <Activity className="h-5 w-5" />
+                </div>
+                <span className="font-serif font-bold text-xl text-gray-900">Ridge Realty</span>
+              </div>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                Dedicated to providing exceptional service in the Pahrump real estate market. Your trust is our foundation.
+              </p>
+              <div className="flex gap-2">
+                {socialLinks.map((item, idx) => (
+                   <a key={idx} href={item.url} target="_blank" rel="noopener noreferrer" className={`w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center bg-white transition-all duration-300 hover:scale-110 hover:shadow-lg hover:-translate-y-1 ${item.color}`} title={item.name}>
+                      <img src={item.icon} alt={item.name} className="w-4 h-4 object-contain" />
+                   </a>
+                ))}
+              </div>
             </div>
-            <p className="text-sm text-gray-400">
+
+            {/* Links Column */}
+            <div>
+              <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-6">Navigation</h4>
+              <ul className="space-y-4">
+                <li><Link to="/" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Home</Link></li>
+                <li><Link to="/lets-move" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Let's Move</Link></li>
+                <li><Link to="/about" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">About Us</Link></li>
+              </ul>
+            </div>
+
+            {/* Contact Column */}
+            <div>
+              <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-6">Contact</h4>
+              <ul className="space-y-4 text-sm text-gray-500">
+                <li className="flex items-start gap-3">
+                  <span>3190 HW-160, Suite F<br/>Pahrump, NV 89048</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span>(206) 919-6886</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <span>Open every weekdays from 8am to 7pm</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-green-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-xs text-gray-400 font-medium">
               &copy; {new Date().getFullYear()} The Ridge Realty Group. All rights reserved.
             </p>
+            <div className="flex gap-6 text-xs text-gray-400 font-medium">
+              <a href="#" className="hover:text-green-600 transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-green-600 transition-colors">Terms of Service</a>
+            </div>
           </div>
-        </footer>
-      )}
+        </div>
+      </footer>
     </div>
   );
 };
