@@ -73,7 +73,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className={`p-2 rounded-full transition-colors duration-500 ease-expo ${theme.logoBg} group-hover:scale-110`}>
               <Activity className={`h-4 w-4 sm:h-5 sm:w-5 ${theme.logoIcon}`} />
             </div>
-            <span className="font-bold text-base sm:text-lg tracking-tight hidden sm:block">MoveAI</span>
+            <span className="font-bold text-base sm:text-lg tracking-tight hidden sm:block">Ridge Realty</span>
           </Link>
           
           {/* Desktop Navigation Links - Centered in remaining space */}
@@ -170,10 +170,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="max-w-7xl mx-auto px-6 text-center animate-fadeInUp">
             <div className="flex justify-center items-center gap-2 mb-4 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
                <Activity className="h-5 w-5 text-green-600" />
-               <span className="font-bold text-gray-900">MoveAI</span>
+               <span className="font-bold text-gray-900">Ridge Realty</span>
             </div>
             <p className="text-sm text-gray-400">
-              &copy; {new Date().getFullYear()} MoveAI. Powered by Google Gemini.
+              &copy; {new Date().getFullYear()} The Ridge Realty Group. All rights reserved.
             </p>
           </div>
         </footer>

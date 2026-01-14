@@ -1,17 +1,21 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MoveAI - Let's Move</title>
+    <title>Pahrump Realtor - Marci Metzger</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
           extend: {
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
             },
             colors: {
               primary: '#22c55e', // Green 500
@@ -33,6 +37,7 @@
               shimmer: "shimmer 2s infinite",
               scaleIn: "scaleIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               fadeIn: "fadeIn 0.6s ease-out forwards",
+              scroll: "scroll 60s linear infinite",
             },
             keyframes: {
               blob: {
@@ -71,6 +76,10 @@
               },
               shimmer: {
                 "100%": { transform: "translateX(100%)" },
+              },
+              scroll: {
+                "0%": { transform: "translateX(0)" },
+                "100%": { transform: "translateX(-100%)" },
               },
             },
           }
