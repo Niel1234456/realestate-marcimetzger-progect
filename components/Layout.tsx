@@ -45,9 +45,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       };
 
   const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/lets-move', label: "Let's Move" },
-    { path: '/about', label: 'About' }
+    { path: '/', label: 'Home', external: false },
+    { path: 'https://marcimetzger.com/listings', label: 'Listings', external: true },
+    { path: 'https://marcimetzger.com/lets-move', label: "Let's Move", external: true },
+    { path: 'https://marcimetzger.com/about-us', label: 'About', external: true }
   ];
 
   // Social Media Links Data matching Home page
@@ -88,15 +89,25 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Desktop Navigation Links - Centered in remaining space */}
           <div className="hidden md:flex flex-1 items-center justify-center gap-1">
             {navLinks.map((link) => {
-              const isActive = location.pathname === link.path;
+              const isActive = !link.external && location.pathname === link.path;
+              const classes = `
+                px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-500 ease-expo whitespace-nowrap
+                ${isActive ? theme.linkActive : theme.linkInactive}
+              `;
+
+              if (link.external) {
+                return (
+                  <a key={link.path} href={link.path} className={classes}>
+                    {link.label}
+                  </a>
+                );
+              }
+
               return (
                 <Link
                   key={link.path}
                   to={link.path}
-                  className={`
-                    px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-500 ease-expo whitespace-nowrap
-                    ${isActive ? theme.linkActive : theme.linkInactive}
-                  `}
+                  className={classes}
                 >
                   {link.label}
                 </Link>
@@ -147,22 +158,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               flex flex-col gap-1 overflow-hidden shadow-2xl origin-top
               ${theme.mobileMenu}
             `}>
-              {navLinks.map((link) => (
-                <Link 
-                  key={link.path}
-                  to={link.path} 
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`
-                    block px-6 py-4 rounded-2xl text-lg font-bold transition-all duration-300
-                    ${location.pathname === link.path 
-                      ? 'bg-green-500 text-white' 
-                      : 'hover:bg-white/10'
-                    }
-                  `}
-                >
-                   {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = !link.external && location.pathname === link.path;
+                const classes = `
+                  block px-6 py-4 rounded-2xl text-lg font-bold transition-all duration-300
+                  ${isActive 
+                    ? 'bg-green-500 text-white' 
+                    : 'hover:bg-white/10'
+                  }
+                `;
+                
+                if (link.external) {
+                  return (
+                    <a 
+                      key={link.path}
+                      href={link.path}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={classes}
+                    >
+                       {link.label}
+                    </a>
+                  );
+                }
+
+                return (
+                  <Link 
+                    key={link.path}
+                    to={link.path} 
+                    onClick={() => setIsMenuOpen(false)}
+                    className={classes}
+                  >
+                     {link.label}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </nav>
@@ -203,8 +232,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-6">Navigation</h4>
               <ul className="space-y-4">
                 <li><Link to="/" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Home</Link></li>
-                <li><Link to="/lets-move" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Let's Move</Link></li>
-                <li><Link to="/about" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">About Us</Link></li>
+                <li><a href="https://marcimetzger.com/listings" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Listings</a></li>
+                <li><a href="https://marcimetzger.com/lets-move" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Let's Move</a></li>
+                <li><a href="https://marcimetzger.com/about-us" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">About Us</a></li>
               </ul>
             </div>
 
