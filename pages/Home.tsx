@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, Trophy, TrendingUp, Star, Home as HomeIcon, Megaphone, ArrowUpRight, Search, MapPin } from 'lucide-react';
 
 // Unified small font label for all slides
 const BRAND_LABEL = "MARCI METZGER - THE RIDGE REALTY GROUP";
@@ -47,6 +47,39 @@ const logos = [
 // Repeat logos to ensure seamless scroll even on wide screens
 const displayLogos = [...logos, ...logos, ...logos];
 
+// Mock Data for Search Suggestions
+const searchSuggestions = [
+  { text: "4500 Winery Rd, Pahrump", type: "Address" },
+  { text: "MLS #982103", type: "MLS" },
+  { text: "2300 Gamebird Rd", type: "Address" },
+  { text: "Mountain Falls Golf Course", type: "Community" },
+  { text: "150 Hwy 160", type: "Commercial" },
+  { text: "Calvada Valley Unit 7", type: "Area" },
+  { text: "Artesia at Hafen Ranch", type: "Community" }
+];
+
+// Search Options Data
+const searchOptions = {
+  locations: [
+    "Pahrump, NV", 
+    "Las Vegas, NV", 
+    "Henderson, NV", 
+    "North Las Vegas, NV", 
+    "Summerlin, NV", 
+    "Boulder City, NV", 
+    "Mesquite, NV", 
+    "Mt Charleston, NV",
+    "Blue Diamond, NV",
+    "Enterprise, NV"
+  ],
+  types: ["Single Family", "Condo / Townhouse", "Multi-Family", "Manufactured", "Land / Lot", "Commercial", "Luxury Estate", "Rental"],
+  sorts: ["Newest Listings", "Price: Low to High", "Price: High to Low", "Bedrooms: High to Low", "Bathrooms: High to Low", "Square Feet: High to Low", "Year Built: Newest", "Most Popular"],
+  beds: ["Any Bedrooms", "Studio", "1+ Bedrooms", "2+ Bedrooms", "3+ Bedrooms", "4+ Bedrooms", "5+ Bedrooms", "6+ Bedrooms"],
+  baths: ["Any Bathrooms", "1+ Bathrooms", "1.5+ Bathrooms", "2+ Bathrooms", "2.5+ Bathrooms", "3+ Bathrooms", "4+ Bathrooms", "5+ Bathrooms"],
+  minPrice: ["No Min Price", "$100,000", "$200,000", "$300,000", "$400,000", "$500,000", "$600,000", "$800,000"],
+  maxPrice: ["No Max Price", "$300,000", "$400,000", "$500,000", "$600,000", "$700,000", "$800,000", "$1,000,000+"]
+};
+
 const Home: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   
@@ -57,6 +90,14 @@ const Home: React.FC = () => {
   // Intersection Observer for the 'Get It Sold' section
   const soldSectionRef = useRef<HTMLDivElement>(null);
   const [isSoldVisible, setIsSoldVisible] = useState(false);
+
+  // Intersection Observer for the 'Find Your Dream Home' section
+  const findHomeRef = useRef<HTMLDivElement>(null);
+  const [isFindHomeVisible, setIsFindHomeVisible] = useState(false);
+
+  // State for search input focus/dropdown
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     // Slide Timer
@@ -78,6 +119,9 @@ const Home: React.FC = () => {
           if (entry.target === soldSectionRef.current) {
              setIsSoldVisible(entry.isIntersecting);
           }
+          if (entry.target === findHomeRef.current) {
+             setIsFindHomeVisible(entry.isIntersecting);
+          }
         });
       },
       { 
@@ -88,6 +132,7 @@ const Home: React.FC = () => {
 
     if (aboutSectionRef.current) observer.observe(aboutSectionRef.current);
     if (soldSectionRef.current) observer.observe(soldSectionRef.current);
+    if (findHomeRef.current) observer.observe(findHomeRef.current);
 
     return () => observer.disconnect();
   }, []);
@@ -554,8 +599,170 @@ const Home: React.FC = () => {
           </div>
       </section>
 
+      {/* ---------------- FIND YOUR DREAM HOME SECTION ---------------- */}
+      <section ref={findHomeRef} className="relative py-20 lg:py-28 overflow-hidden bg-white">
+         {/* Decorative Background Blobs - Light Theme */}
+         <div className="absolute top-0 left-0 w-full h-full pointer-events-none z-0 overflow-hidden">
+             <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] bg-green-100/40 rounded-full blur-[80px]"></div>
+             <div className="absolute top-[20%] right-[10%] w-[30%] h-[60%] bg-emerald-50/60 rounded-full blur-[100px] rotate-12"></div>
+         </div>
+
+         <div className="relative z-10 max-w-7xl mx-auto px-6">
+            
+            <div className={`bg-white rounded-[2rem] shadow-2xl overflow-hidden border border-gray-100 flex flex-col lg:flex-row transition-all duration-1000 ease-expo ${isFindHomeVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-12 scale-95'}`}>
+               
+               {/* Left Side - Search Interface (50% Width) */}
+               <div className="lg:w-1/2 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+                  
+                  <div className="mb-8">
+                     <span className="inline-block py-1 px-3 rounded-full bg-green-50 border border-green-100 text-green-700 text-[10px] font-bold tracking-[0.2em] uppercase mb-3">
+                       Exclusive Listings
+                     </span>
+                     <h2 className="text-3xl md:text-5xl font-serif text-gray-900 mb-3">
+                       Find Your <span className="text-green-600 italic">Dream Home</span>
+                     </h2>
+                     <p className="text-gray-500 text-sm md:text-base max-w-lg">
+                       Browse our curated selection of premium properties. Filter by location, price, and amenities to find the perfect match.
+                     </p>
+                  </div>
+
+                  {/* Search Form */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                     
+                     {/* Main Search Input - Full Width in this column */}
+                     <div className="md:col-span-2 group relative z-50 mb-2">
+                        <label className="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 ml-1 group-focus-within:text-green-600 transition-colors">Search Listing</label>
+                        <div className="relative">
+                           <input 
+                             type="text" 
+                             value={searchValue}
+                             onChange={(e) => setSearchValue(e.target.value)}
+                             onFocus={() => setIsSearchFocused(true)}
+                             onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)} // Delay close to allow clicks
+                             placeholder="Enter address, city, zip code, or MLS number..." 
+                             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-4 pl-12 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 relative z-20" 
+                           />
+                           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors z-20" size={20} />
+                           
+                           {/* Search Suggestions Dropdown */}
+                           {isSearchFocused && (
+                             <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden z-30 animate-fadeIn origin-top transform transition-all duration-300">
+                                <div className="px-4 py-2 bg-gray-50 border-b border-gray-100 text-[10px] font-bold uppercase text-gray-400 tracking-wider">
+                                   Suggestions
+                                </div>
+                                {searchSuggestions.map((item, index) => (
+                                  <button 
+                                     key={index}
+                                     onClick={() => { setSearchValue(item.text); setIsSearchFocused(false); }}
+                                     className="w-full text-left px-5 py-3 hover:bg-green-50 flex items-center justify-between group/item transition-colors"
+                                  >
+                                     <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gray-100 rounded-full text-gray-500 group-hover/item:bg-white group-hover/item:text-green-600 transition-colors">
+                                           <MapPin size={14} />
+                                        </div>
+                                        <span className="text-gray-700 group-hover/item:text-green-900 font-medium text-sm">{item.text}</span>
+                                     </div>
+                                     <span className="text-[10px] bg-gray-100 text-gray-500 px-2 py-1 rounded-full group-hover/item:bg-white group-hover/item:text-green-600 transition-colors font-bold uppercase">{item.type}</span>
+                                  </button>
+                                ))}
+                             </div>
+                           )}
+                        </div>
+                     </div>
+
+                     {/* Filters using Helper Component with updated styling */}
+                     <SelectFieldLight label="Location" options={searchOptions.locations} delay={0} isVisible={isFindHomeVisible} />
+                     <SelectFieldLight label="Property Type" options={searchOptions.types} delay={50} isVisible={isFindHomeVisible} />
+                     <SelectFieldLight label="Sort By" options={searchOptions.sorts} delay={100} isVisible={isFindHomeVisible} />
+                     <SelectFieldLight label="Bedrooms" options={searchOptions.beds} delay={150} isVisible={isFindHomeVisible} />
+                     <SelectFieldLight label="Bathrooms" options={searchOptions.baths} delay={200} isVisible={isFindHomeVisible} />
+                     <SelectFieldLight label="Min Price" options={searchOptions.minPrice} delay={250} isVisible={isFindHomeVisible} />
+                     <SelectFieldLight label="Max Price" options={searchOptions.maxPrice} delay={300} isVisible={isFindHomeVisible} />
+
+                     {/* Search Button - Full width on mobile, auto on desktop */}
+                     <div className="md:col-span-1 flex items-end mt-4 md:mt-0">
+                        <button className="w-full h-[52px] bg-green-600 hover:bg-green-700 text-white font-bold text-sm tracking-widest uppercase rounded-xl shadow-lg shadow-green-200 hover:shadow-green-300 transition-all duration-300 flex items-center justify-center gap-3 group transform hover:-translate-y-0.5 active:scale-95">
+                           <span>Search</span>
+                           <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+                        </button>
+                     </div>
+                  </div>
+
+                  <div className="mt-8 pt-6 border-t border-gray-100 flex flex-wrap justify-between items-center gap-4 text-xs font-medium text-gray-500">
+                     <div className="flex gap-4">
+                        <a href="#" className="hover:text-green-600 transition-colors underline decoration-transparent hover:decoration-green-600 underline-offset-4">Advanced Search</a>
+                        <a href="#" className="hover:text-green-600 transition-colors underline decoration-transparent hover:decoration-green-600 underline-offset-4">Map Search</a>
+                     </div>
+                     <div>
+                        <span className="text-gray-400">Looking for commercial?</span> <a href="#" className="text-green-600 hover:text-green-700 font-bold ml-1">Click here</a>
+                     </div>
+                  </div>
+
+               </div>
+
+               {/* Right Side - Image (50% Width) */}
+               <div className="lg:w-1/2 relative min-h-[300px] lg:min-h-full overflow-hidden group">
+                  <img 
+                    src="https://img1.wsimg.com/isteam/stock/107927/:/rs=w:1200,h:600,cg:true,m/cr=w:1200,h:600" 
+                    alt="Dream Home" 
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-[2s] ease-out group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-green-900/60 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity duration-500"></div>
+                  
+                  {/* Overlay Text on Image */}
+                  <div className="absolute bottom-0 left-0 p-8 md:p-12 text-white transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">
+                     <p className="font-serif italic text-xl opacity-90 mb-2">Discover</p>
+                     <p className="font-bold text-3xl md:text-4xl tracking-tight leading-none mb-4">Luxury Living<br/>In Pahrump</p>
+                     <div className="h-1 w-12 bg-green-400 rounded-full"></div>
+                  </div>
+               </div>
+
+            </div>
+
+         </div>
+      </section>
+
     </div>
   );
 };
+
+// Helper Component for Select Fields (Dark Theme - kept for potential future use or if needed elsewhere)
+const SelectField = ({ label, options, delay, isVisible }: { label: string, options: string[], delay: number, isVisible: boolean }) => (
+  <div className={`group transition-all duration-700 ease-out`} style={{ transitionDelay: `${delay}ms`, opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(10px)' }}>
+     <label className="block text-gray-400 text-xs font-bold uppercase tracking-wider mb-2 ml-1 group-focus-within:text-green-400 transition-colors">{label}</label>
+     <div className="relative">
+        <select className="w-full bg-black/40 border border-white/10 rounded-xl px-5 py-3.5 text-white appearance-none focus:outline-none focus:border-green-500/50 focus:bg-black/60 focus:ring-1 focus:ring-green-500/50 transition-all duration-300 cursor-pointer shadow-sm hover:border-white/20">
+           {options.map((opt, i) => (
+              <option key={i} value={opt} className="bg-gray-900 text-gray-300">{opt}</option>
+           ))}
+        </select>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500 group-hover:text-gray-300 transition-colors">
+           <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+           </svg>
+        </div>
+     </div>
+  </div>
+);
+
+// Helper Component for Select Fields (Light Theme)
+const SelectFieldLight = ({ label, options, delay, isVisible }: { label: string, options: string[], delay: number, isVisible: boolean }) => (
+   <div className={`group transition-all duration-700 ease-out`} style={{ transitionDelay: `${delay}ms`, opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(10px)' }}>
+      <label className="block text-gray-500 text-xs font-bold uppercase tracking-wider mb-2 ml-1 group-focus-within:text-green-600 transition-colors">{label}</label>
+      <div className="relative">
+         <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 text-gray-900 appearance-none focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 cursor-pointer shadow-sm hover:border-green-200">
+            {options.map((opt, i) => (
+               <option key={i} value={opt} className="bg-white text-gray-900">{opt}</option>
+            ))}
+         </select>
+         {/* Custom Arrow Icon */}
+         <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-hover:text-green-600 transition-colors">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+               <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+         </div>
+      </div>
+   </div>
+ );
 
 export default Home;
