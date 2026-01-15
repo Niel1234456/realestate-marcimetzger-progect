@@ -234,7 +234,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-green-50 p-2 transition-transform duration-500 group-hover:scale-105">
                   <img 
                     src={LOGO_URL} 
-                    alt="Ridge Realty" 
+                    alt="MARCI METZGER - THE RIDGE REALTY GROUP" 
                     className="w-full h-full object-contain"
                   />
                 </div>
