@@ -1,32 +1,28 @@
-export enum IntensityLevel {
-  LOW = 'Low Impact',
-  MODERATE = 'Moderate',
-  HIGH = 'High Intensity',
-  BEAST = 'Beast Mode'
+
+export enum PropertyType {
+  RESIDENTIAL = 'Residential',
+  COMMERCIAL = 'Commercial',
+  LAND = 'Land/Lot',
+  RENTAL = 'Rental'
 }
 
-export enum WorkoutType {
-  CARDIO = 'Cardio',
-  STRENGTH = 'Strength',
-  YOGA = 'Yoga/Stretch',
-  HIIT = 'HIIT',
-  DANCE = 'Dance'
+export enum ListingStatus {
+  ACTIVE = 'Active',
+  PENDING = 'Pending',
+  SOLD = 'Sold'
 }
 
-export interface WorkoutRequest {
-  duration: number; // in minutes
-  intensity: IntensityLevel;
-  type: WorkoutType;
-  equipment: string;
+export interface RelocationRequest {
+  currentCity: string;
+  movingTo: string;
+  timeframe: string;
+  preferences: string;
 }
 
-export interface GeneratedWorkout {
-  title: string;
-  description: string;
-  exercises: {
-    name: string;
-    instructions: string;
-    durationOrReps: string;
-  }[];
-  coolDown: string;
+export interface PropertyInquiry {
+  name: string;
+  email: string;
+  phone: string;
+  propertyId?: string;
+  message: string;
 }
