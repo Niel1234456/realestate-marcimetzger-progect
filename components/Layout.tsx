@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, Activity, Search } from 'lucide-react';
 
 interface LayoutProps {
@@ -11,7 +11,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const isHome = location.pathname === '/';
 
   // Handle scroll effect for glass intensity and padding
@@ -22,6 +24,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Navigate to listings page with query param
+      navigate(`/listings?q=${encodeURIComponent(searchQuery)}`);
+      // Unfocus the input and close search visuals if desired
+      (e.target as HTMLInputElement).blur();
+      setSearchActive(false);
+      // Optional: Clear search query after navigation or keep it
+      // setSearchQuery('');
+    }
+  };
 
   // Theme configuration based on route
   const theme = isHome 
@@ -77,13 +92,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {/* Logo Section - Flex Start */}
           <Link 
             to="/" 
-            className="flex items-center gap-3 group px-2 py-1 flex-shrink-0" 
+            className="flex items-center gap-3 group px-4 py-2 flex-shrink-0" 
             onClick={() => setIsMenuOpen(false)}
           >
-            <div className={`p-2 rounded-full transition-colors duration-500 ease-expo ${theme.logoBg} group-hover:scale-110`}>
-              <Activity className={`h-4 w-4 sm:h-5 sm:w-5 ${theme.logoIcon}`} />
-            </div>
-            <span className="font-bold text-base sm:text-lg tracking-tight hidden sm:block">Ridge Realty</span>
+            <img 
+               src="https://photos.fife.usercontent.google.com/pw/AP1GczMFeEX6r6UByV-1HD2G8mYoKJLS8ryy01hQk_f18-gJyoovKcys0fWA=w1071-h334-s-no-gm?authuser=0" 
+               alt="Ridge Realty Logo" 
+               className="h-10 w-auto object-contain"
+            />
+            <span className="font-bold text-lg tracking-tight block">Ridge Realty</span>
           </Link>
           
           {/* Desktop Navigation Links - Centered in remaining space */}
@@ -117,7 +134,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 `} />
                 <input 
                   type="text" 
-                  placeholder="Search"
+                  placeholder="Search listings..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleSearch}
                   onFocus={() => setSearchActive(true)}
                   onBlur={() => setSearchActive(false)}
                   className={`
