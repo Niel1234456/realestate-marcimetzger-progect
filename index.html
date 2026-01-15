@@ -108,24 +108,42 @@
       .delay-700 { animation-delay: 700ms; }
     </style>
     <script>
-      // Script to generate a black version of the logo for the favicon
+      // Script to generate a circular black favicon containing a white logo
       (function() {
         const logoUrl = "https://lh3.googleusercontent.com/d/1CkY6ieN8w-P7JBdoH033f4-2DvtOGimv";
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = function() {
+          const size = 64;
           const canvas = document.createElement('canvas');
-          canvas.width = 64;
-          canvas.height = 64;
+          canvas.width = size;
+          canvas.height = size;
           const ctx = canvas.getContext('2d');
           
-          // Draw the image onto our icon-sized canvas
-          ctx.drawImage(img, 0, 0, 64, 64);
-          
-          // Use compositing to turn all opaque pixels into solid black
-          ctx.globalCompositeOperation = 'source-in';
+          // 1. Draw solid black circle background
+          ctx.beginPath();
+          ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
           ctx.fillStyle = '#000000';
-          ctx.fillRect(0, 0, 64, 64);
+          ctx.fill();
+          
+          // 2. Create temporary canvas to process the logo color
+          const tempCanvas = document.createElement('canvas');
+          tempCanvas.width = size;
+          tempCanvas.height = size;
+          const tempCtx = tempCanvas.getContext('2d');
+          
+          // Draw logo centered and slightly padded inside the circle
+          const padding = size * 0.2;
+          const drawSize = size - (padding * 2);
+          tempCtx.drawImage(img, padding, padding, drawSize, drawSize);
+          
+          // Transform the logo to white so it's visible on the black circle
+          tempCtx.globalCompositeOperation = 'source-in';
+          tempCtx.fillStyle = '#FFFFFF';
+          tempCtx.fillRect(0, 0, size, size);
+          
+          // 3. Draw the white logo onto the main circular black canvas
+          ctx.drawImage(tempCanvas, 0, 0);
           
           // Set as the favicon
           const link = document.getElementById('favicon');
