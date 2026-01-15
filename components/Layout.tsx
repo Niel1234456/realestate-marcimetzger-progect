@@ -175,9 +175,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-b from-white via-green-50 to-green-100/30 border-t border-green-100 pt-20 pb-10">
+      <footer className="bg-gradient-to-b from-white via-green-50 to-green-100/30 border-t border-green-100 pt-10 pb-6">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
             
             {/* Brand Column */}
             <div className="space-y-6">
@@ -227,7 +227,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
 
-          <div className="border-t border-green-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="border-t border-green-200 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-xs text-gray-400 font-medium">
               &copy; {new Date().getFullYear()} The Ridge Realty Group. All rights reserved.
             </p>
