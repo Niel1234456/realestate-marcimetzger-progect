@@ -234,12 +234,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-lg border border-green-50 p-2 transition-transform duration-500 group-hover:scale-105">
                   <img 
                     src={LOGO_URL} 
-                    alt="MARCI METZGER - THE RIDGE REALTY GROUP" 
+                    alt="Ridge Realty" 
                     className="w-full h-full object-contain"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-serif font-bold text-2xl text-gray-900 tracking-tight leading-tight">Ridge Realty</span>
+                  <span className="font-serif font-bold text-2xl text-gray-900 tracking-tight leading-tight">MARCI METZGER - THE RIDGE REALTY GROUP</span>
                   <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-green-600">The Gold Standard</span>
                 </div>
               </div>
