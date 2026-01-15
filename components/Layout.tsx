@@ -25,6 +25,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
   const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -33,8 +38,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       // Unfocus the input and close search visuals if desired
       (e.target as HTMLInputElement).blur();
       setSearchActive(false);
-      // Optional: Clear search query after navigation or keep it
-      // setSearchQuery('');
+      setIsMenuOpen(false); // Close mobile menu if open
     }
   };
 
@@ -47,7 +51,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         logoIcon: 'text-green-400',
         linkActive: 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.4)]',
         linkInactive: 'text-gray-300 hover:text-white hover:bg-white/10',
-        mobileMenu: 'bg-black/95 border-white/10 text-white'
+        mobileMenu: 'bg-black/95 border-white/10 text-white',
+        mobileInput: 'bg-white/10 border-white/20 text-white placeholder-white/50 focus:bg-white/20',
+        mobileIcon: 'text-white/50'
       }
     : {
         // Light/Glass theme for other pages
@@ -56,7 +62,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         logoIcon: 'text-green-600',
         linkActive: 'bg-black text-white shadow-lg',
         linkInactive: 'text-gray-600 hover:text-black hover:bg-black/5',
-        mobileMenu: 'bg-white border-gray-100 text-gray-900 shadow-xl'
+        mobileMenu: 'bg-white border-gray-100 text-gray-900 shadow-xl',
+        mobileInput: 'bg-gray-100 border-gray-200 text-gray-900 placeholder-gray-400 focus:bg-white focus:border-green-500',
+        mobileIcon: 'text-gray-400'
       };
 
   const navLinks = [
@@ -78,29 +86,24 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     <div className="min-h-screen flex flex-col font-sans selection:bg-green-500 selection:text-white">
       
       {/* Dynamic Floating Header */}
-      <header className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-700 ease-expo ${scrolled ? 'mt-2' : 'mt-6'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 flex justify-center transition-all duration-700 ease-expo ${scrolled ? 'mt-2' : 'mt-4 sm:mt-6'}`}>
         <nav 
           className={`
             relative flex items-center justify-between 
-            px-2 rounded-full border 
+            px-3 sm:px-4 rounded-full border 
             transition-all duration-700 ease-expo
             ${theme.navContainer}
             ${isMenuOpen ? 'rounded-2xl ring-2 ring-green-500/20' : 'rounded-full'}
-            ${isHome ? 'w-[92%] max-w-5xl' : 'w-[95%] max-w-5xl'}
+            ${isHome ? 'w-[95%] max-w-5xl' : 'w-[95%] max-w-5xl'}
           `}
         >
           {/* Logo Section - Flex Start */}
           <Link 
             to="/" 
-            className="flex items-center gap-3 group px-4 py-2 flex-shrink-0" 
+            className="flex items-center gap-2 sm:gap-3 group px-2 sm:px-4 py-2 flex-shrink-0" 
             onClick={() => setIsMenuOpen(false)}
           >
-            <img 
-               src="https://photos.fife.usercontent.google.com/pw/AP1GczMFeEX6r6UByV-1HD2G8mYoKJLS8ryy01hQk_f18-gJyoovKcys0fWA=w1071-h334-s-no-gm?authuser=0" 
-               alt="Ridge Realty Logo" 
-               className="h-10 w-auto object-contain"
-            />
-            <span className="font-bold text-lg tracking-tight block">Ridge Realty</span>
+            <span className="font-bold text-base sm:text-lg tracking-tight block whitespace-nowrap">Ridge Realty</span>
           </Link>
           
           {/* Desktop Navigation Links - Centered in remaining space */}
@@ -112,7 +115,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   key={link.path}
                   to={link.path}
                   className={`
-                    px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-500 ease-expo whitespace-nowrap
+                    px-4 lg:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-500 ease-expo whitespace-nowrap
                     ${isActive ? theme.linkActive : theme.linkInactive}
                   `}
                 >
@@ -126,7 +129,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           <div className="hidden md:flex items-center pr-1 gap-3 flex-shrink-0">
              <div className={`
                 relative flex items-center transition-all duration-500 ease-expo group
-                ${searchActive ? 'w-60' : 'w-40'}
+                ${searchActive ? 'w-48 lg:w-60' : 'w-32 lg:w-40'}
               `}>
                 <Search className={`
                   absolute left-3.5 w-4 h-4 transition-colors duration-300 pointer-events-none
@@ -134,7 +137,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 `} />
                 <input 
                   type="text" 
-                  placeholder="Search listings..."
+                  placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearch}
@@ -152,22 +155,40 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </div>
 
           {/* Mobile Menu Toggle - Absolute Right on Mobile, but here flex works because desktop elements are hidden */}
-          <div className="flex md:hidden pr-1 ml-auto">
+          <div className="flex md:hidden ml-auto">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className={`p-2 rounded-full transition-colors ${isHome ? 'hover:bg-white/20' : 'hover:bg-black/5'}`}
+              aria-label="Toggle menu"
             >
-              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
 
            {/* Mobile Dropdown Menu */}
            {isMenuOpen && (
             <div className={`
-              absolute top-full left-0 right-0 mt-3 p-2 rounded-3xl border backdrop-blur-3xl animate-slideDown
-              flex flex-col gap-1 overflow-hidden shadow-2xl origin-top
+              absolute top-full left-0 right-0 mt-3 p-3 rounded-3xl border backdrop-blur-3xl animate-slideDown
+              flex flex-col gap-2 overflow-hidden shadow-2xl origin-top z-50
               ${theme.mobileMenu}
             `}>
+              {/* Mobile Search */}
+              <div className="mb-2 px-2 pt-1">
+                 <div className="relative">
+                    <input 
+                      type="text" 
+                      placeholder="Search listings..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyDown={handleSearch}
+                      className={`w-full py-3 pl-10 pr-4 rounded-xl text-base font-medium outline-none border transition-all ${theme.mobileInput}`}
+                    />
+                    <Search className={`absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 ${theme.mobileIcon}`} />
+                 </div>
+              </div>
+
+              <div className="h-px bg-current opacity-10 mx-2 mb-1"></div>
+
               {navLinks.map((link) => (
                 <Link 
                   key={link.path}
@@ -176,7 +197,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   className={`
                     block px-6 py-4 rounded-2xl text-lg font-bold transition-all duration-300
                     ${location.pathname === link.path 
-                      ? 'bg-green-500 text-white' 
+                      ? 'bg-green-500 text-white shadow-lg' 
                       : 'hover:bg-white/10'
                     }
                   `}
@@ -195,12 +216,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-b from-white via-green-50 to-green-100/30 border-t border-green-100 pt-10 pb-6">
+      <footer className="bg-gradient-to-b from-white via-green-50 to-green-100/30 border-t border-green-100 pt-6 pb-4">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
             
             {/* Brand Column */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div className="flex items-center gap-2 group">
                 <div className="p-2.5 bg-green-600 rounded-full text-white shadow-lg shadow-green-200 group-hover:scale-110 transition-transform">
                   <Activity className="h-5 w-5" />
@@ -221,8 +242,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Links Column */}
             <div>
-              <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-6">Navigation</h4>
-              <ul className="space-y-4">
+              <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-4">Navigation</h4>
+              <ul className="space-y-3">
                 <li><Link to="/" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Home</Link></li>
                 <li><Link to="/listings" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Listings</Link></li>
                 <li><Link to="/lets-move" className="text-gray-500 hover:text-green-600 text-sm font-medium transition-colors">Let's Move</Link></li>
@@ -232,8 +253,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
             {/* Contact Column */}
             <div>
-              <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-6">Contact</h4>
-              <ul className="space-y-4 text-sm text-gray-500">
+              <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-4">Contact</h4>
+              <ul className="space-y-3 text-sm text-gray-500">
                 <li className="flex items-start gap-3">
                   <span>3190 HW-160, Suite F<br/>Pahrump, NV 89048</span>
                 </li>
@@ -247,8 +268,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
 
-          <div className="border-t border-green-200 pt-6 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-xs text-gray-400 font-medium">
+          <div className="border-t border-green-200 pt-4 flex flex-col md:flex-row justify-between items-center gap-3">
+            <p className="text-xs text-gray-400 font-medium text-center md:text-left">
               &copy; {new Date().getFullYear()} The Ridge Realty Group. All rights reserved.
             </p>
             <div className="flex gap-6 text-xs text-gray-400 font-medium">

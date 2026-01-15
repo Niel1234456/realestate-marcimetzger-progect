@@ -137,20 +137,26 @@ const CurvedGallery: React.FC = () => {
   const requestRef = useRef<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<(HTMLDivElement | null)[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   // 3 sets of images for seamless loop
   const displayImages = [...galleryImages, ...galleryImages, ...galleryImages]; 
   
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   // Responsive item width
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const itemWidth = isMobile ? 180 : 280; // Reduced size
-  const gap = isMobile ? 15 : 30;
+  const itemWidth = isMobile ? 220 : 280; 
+  const gap = isMobile ? 20 : 30;
   const totalItemWidth = itemWidth + gap;
   const totalWidth = galleryImages.length * totalItemWidth; // Width of ONE set
 
   useEffect(() => {
-    let lastTime = 0;
-    const speed = 0.6; // Slightly slower for elegance
+    const speed = isMobile ? 0.4 : 0.6; // Slower on mobile
 
     const animate = (time: number) => {
       if (!containerRef.current) return;
@@ -172,7 +178,7 @@ const CurvedGallery: React.FC = () => {
         const itemCenter = xPos + itemWidth / 2;
         
         // Normalized distance from center (-1 to 1 based on half screen width)
-        const distNorm = (itemCenter - centerX) / (screenWidth * 0.55);
+        const distNorm = (itemCenter - centerX) / (screenWidth * (isMobile ? 0.7 : 0.55));
         
         // Math for Straight-to-Curved Transition
         // Center zone is flatter, edges curve away rapidly
@@ -180,12 +186,12 @@ const CurvedGallery: React.FC = () => {
         
         // Z-Translation: Move back significantly at edges (Convex/Cylinder effect)
         // Using power function to keep center straighter
-        const z = -Math.pow(absNorm, 2) * (isMobile ? 150 : 300);
+        const z = -Math.pow(absNorm, 2) * (isMobile ? 120 : 300);
         
         // Rotation: Rotate inward to face center
         // Left side (dist < 0) rotates positive Y (faces right/in)
         // Right side (dist > 0) rotates negative Y (faces left/in)
-        const rotateY = -distNorm * (isMobile ? 25 : 35);
+        const rotateY = -distNorm * (isMobile ? 15 : 35);
 
         // Opacity: Fade edges slightly
         const opacity = Math.max(0.2, 1 - Math.pow(absNorm, 3));
@@ -210,8 +216,8 @@ const CurvedGallery: React.FC = () => {
       style={{ perspective: '1200px' }} // Critical for 3D effect
     >
        {/* Gradient Overlays for smooth entry/exit - Light Theme */}
-       <div className="absolute top-0 left-0 w-1/5 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-50 pointer-events-none"></div>
-       <div className="absolute top-0 right-0 w-1/5 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-50 pointer-events-none"></div>
+       <div className="absolute top-0 left-0 w-8 md:w-1/5 h-full bg-gradient-to-r from-white via-white/80 to-transparent z-50 pointer-events-none"></div>
+       <div className="absolute top-0 right-0 w-8 md:w-1/5 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-50 pointer-events-none"></div>
 
        {displayImages.map((img, i) => (
           <div
@@ -313,8 +319,8 @@ const Home: React.FC = () => {
         });
       },
       { 
-        threshold: 0.15,
-        rootMargin: "-50px 0px"
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px"
       } 
     );
 
@@ -357,26 +363,26 @@ const Home: React.FC = () => {
 
         {/* Main Text Content */}
         <div className="absolute inset-0 z-20 w-full max-w-[90rem] mx-auto px-6 sm:px-12 lg:px-16 pointer-events-none flex flex-col justify-center">
-          <div className="max-w-5xl pointer-events-auto mt-32 sm:mt-24">
+          <div className="max-w-5xl pointer-events-auto mt-20 sm:mt-24">
             
             {/* Top Label (Static) */}
             <div className="flex items-center gap-3 mb-6 sm:mb-8 animate-fadeIn">
               <span className="h-px w-8 sm:w-12 bg-green-500"></span>
-              <p className="text-green-400 font-bold tracking-[0.2em] uppercase text-sm sm:text-base md:text-lg">
+              <p className="text-green-400 font-bold tracking-[0.2em] uppercase text-xs sm:text-base md:text-lg">
                 {BRAND_LABEL}
               </p>
             </div>
             
-            <div key={currentSlide} className="space-y-6 sm:space-y-8">
-              {/* Titles */}
-              <div className="space-y-[-0.5rem] sm:space-y-[-1rem]">
+            <div key={currentSlide} className="space-y-4 sm:space-y-8">
+              {/* Titles - Adjusted font sizes for mobile */}
+              <div className="space-y-[-0.25rem] sm:space-y-[-1rem]">
                 <div>
-                  <h1 className="text-5xl sm:text-7xl lg:text-[6rem] xl:text-[7rem] font-extrabold text-white tracking-tighter leading-[0.9] animate-blurInUp delay-100 opacity-0 drop-shadow-2xl">
+                  <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] xl:text-[7rem] font-extrabold text-white tracking-tighter leading-[0.9] animate-blurInUp delay-100 opacity-0 drop-shadow-2xl">
                     {slides[currentSlide].title}
                   </h1>
                 </div>
                 <div>
-                   <h1 className="text-5xl sm:text-7xl lg:text-[6rem] xl:text-[7rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-white to-green-300 tracking-tighter leading-[0.9] animate-blurInUp delay-200 opacity-0 drop-shadow-2xl pb-2">
+                   <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-[6rem] xl:text-[7rem] font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-green-300 via-white to-green-300 tracking-tighter leading-[0.9] animate-blurInUp delay-200 opacity-0 drop-shadow-2xl pb-2">
                     {slides[currentSlide].highlight}
                   </h1>
                 </div>
@@ -384,7 +390,7 @@ const Home: React.FC = () => {
 
               {/* Description */}
               <div className="max-w-lg pt-2 sm:pt-4">
-                <p className="text-lg sm:text-xl text-gray-100 font-medium leading-relaxed animate-blurInUp delay-300 opacity-0 border-l-2 border-white/30 pl-6 drop-shadow-md">
+                <p className="text-base sm:text-lg md:text-xl text-gray-100 font-medium leading-relaxed animate-blurInUp delay-300 opacity-0 border-l-2 border-white/30 pl-4 sm:pl-6 drop-shadow-md">
                   {slides[currentSlide].description}
                 </p>
               </div>
@@ -394,7 +400,7 @@ const Home: React.FC = () => {
                 <div className="flex flex-wrap gap-6 animate-blurInUp delay-400 opacity-0">
                   <Link 
                     to="/lets-move"
-                    className="relative group overflow-hidden px-10 py-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-500 ease-expo hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:border-white/50"
+                    className="relative group overflow-hidden px-8 py-4 sm:px-10 sm:py-5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 transition-all duration-500 ease-expo hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] hover:border-white/50"
                   >
                     <div className="absolute inset-0 bg-white translate-y-[101%] transition-transform duration-500 ease-expo group-hover:translate-y-0" />
                     <span className="relative z-10 flex items-center gap-3 font-bold tracking-[0.2em] text-xs sm:text-sm uppercase text-white transition-colors duration-500 group-hover:text-black">
@@ -412,7 +418,7 @@ const Home: React.FC = () => {
         <div 
           className="absolute bottom-6 right-6 sm:bottom-10 sm:right-10 z-30 flex flex-col items-end gap-6 pointer-events-auto"
         >
-          <div className="flex items-end gap-4 h-32 sm:h-44 md:h-56">
+          <div className="flex items-end gap-4 h-24 sm:h-44 md:h-56">
             {slides.map((slide, index) => {
               const relativeIndex = (index - currentSlide + slides.length) % slides.length;
               
@@ -422,10 +428,11 @@ const Home: React.FC = () => {
               if (relativeIndex === 0) {
                 queueClass = 'w-0 opacity-0 border-0 m-0 pointer-events-none scale-0';
               } else if (relativeIndex === 1 || relativeIndex === 2) {
-                queueClass = 'w-24 sm:w-32 md:w-40 opacity-100 hover:scale-105 hover:border-white/60 scale-100';
+                // Hide thumbnails on very small screens to save space
+                queueClass = 'hidden sm:block sm:w-32 md:w-40 opacity-100 hover:scale-105 hover:border-white/60 scale-100';
                 isVisible = true;
               } else if (relativeIndex === 3) {
-                queueClass = 'w-3 sm:w-6 md:w-8 opacity-30 pointer-events-none grayscale scale-95';
+                queueClass = 'hidden sm:block sm:w-6 md:w-8 opacity-30 pointer-events-none grayscale scale-95';
               } else {
                 queueClass = 'w-0 opacity-0 border-0 m-0 overflow-hidden scale-0';
               }
@@ -451,18 +458,18 @@ const Home: React.FC = () => {
             })}
           </div>
 
-          <div className="hidden sm:flex items-center gap-6">
-             <div className="flex items-center gap-3">
+          <div className="flex items-center gap-6">
+             <div className="flex items-center gap-2 sm:gap-3">
                {slides.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => setCurrentSlide(index)}
-                    className={`h-[3px] transition-all duration-700 ease-expo rounded-full ${index === currentSlide ? 'w-24 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'w-12 bg-white/20 hover:bg-white/50'}`}
+                    className={`h-[3px] transition-all duration-700 ease-expo rounded-full ${index === currentSlide ? 'w-16 sm:w-24 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)]' : 'w-8 sm:w-12 bg-white/20 hover:bg-white/50'}`}
                     aria-label={`Go to slide ${index + 1}`}
                   />
                ))}
              </div>
-             <span className="text-xl font-mono font-bold text-white tracking-widest pl-6 border-l border-white/30 shadow-black drop-shadow-lg animate-fadeIn">0{currentSlide + 1}</span>
+             <span className="text-lg sm:text-xl font-mono font-bold text-white tracking-widest pl-4 sm:pl-6 border-l border-white/30 shadow-black drop-shadow-lg animate-fadeIn">0{currentSlide + 1}</span>
           </div>
         </div>
       </div>
@@ -550,29 +557,29 @@ const Home: React.FC = () => {
       {/* ---------------- PARTNER LOGO CAROUSEL ---------------- */}
       <section className="w-full bg-white border-t border-gray-100 py-10 lg:py-14 overflow-hidden relative">
           {/* Gradient Masks for seamless fade effect */}
-          <div className="absolute top-0 left-0 w-32 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute top-0 right-0 w-32 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
           <div className="flex w-full group overflow-hidden">
             {/* First Set */}
-            <div className="flex items-center gap-16 md:gap-24 flex-shrink-0 animate-scroll whitespace-nowrap pr-16 md:pr-24">
+            <div className="flex items-center gap-12 sm:gap-16 md:gap-24 flex-shrink-0 animate-scroll whitespace-nowrap pr-12 sm:pr-16 md:pr-24">
               {displayLogos.map((logo, index) => (
                  <img 
                     key={`logo-1-${index}`} 
                     src={logo} 
                     alt="Partner Logo" 
-                    className="h-16 md:h-24 w-auto object-contain transition-transform duration-300 cursor-pointer hover:scale-110" 
+                    className="h-12 sm:h-16 md:h-24 w-auto object-contain transition-transform duration-300 cursor-pointer hover:scale-110" 
                  />
               ))}
             </div>
              {/* Second Set for seamless loop */}
-            <div className="flex items-center gap-16 md:gap-24 flex-shrink-0 animate-scroll whitespace-nowrap pr-16 md:pr-24" aria-hidden="true">
+            <div className="flex items-center gap-12 sm:gap-16 md:gap-24 flex-shrink-0 animate-scroll whitespace-nowrap pr-12 sm:pr-16 md:pr-24" aria-hidden="true">
               {displayLogos.map((logo, index) => (
                  <img 
                     key={`logo-2-${index}`} 
                     src={logo} 
                     alt="Partner Logo" 
-                    className="h-16 md:h-24 w-auto object-contain transition-transform duration-300 cursor-pointer hover:scale-110" 
+                    className="h-12 sm:h-16 md:h-24 w-auto object-contain transition-transform duration-300 cursor-pointer hover:scale-110" 
                  />
               ))}
             </div>
@@ -608,31 +615,8 @@ const Home: React.FC = () => {
           <div className={`absolute bottom-24 right-12 w-24 h-24 border border-gray-900/10 rotate-45 pointer-events-none transition-all duration-1000 delay-700 ${isSoldVisible ? 'opacity-100 rotate-45 scale-100' : 'opacity-0 rotate-0 scale-0'}`}></div>
           {/* Top Right Pulse Dot */}
           <div className={`absolute top-1/3 right-1/4 w-4 h-4 bg-green-500/20 rounded-full blur-sm pointer-events-none animate-pulse transition-all duration-700 delay-1000 ${isSoldVisible ? 'opacity-100' : 'opacity-0'}`}></div>
-          {/* Angled Lines */}
-          <div className={`absolute top-10 left-1/3 w-16 h-1 bg-green-500/10 rotate-12 transition-all duration-1000 delay-[600ms] ${isSoldVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-20'}`}></div>
-          <div className={`absolute bottom-10 right-1/3 w-1 h-16 bg-gray-500/10 -rotate-12 transition-all duration-1000 delay-[800ms] ${isSoldVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-20'}`}></div>
           
-          {/* New Accents: Corner Dot Pattern (Top Right) */}
-          <div className={`absolute top-0 right-0 p-8 grid grid-cols-4 gap-2 opacity-20 pointer-events-none transition-all duration-1000 delay-700 ${isSoldVisible ? 'translate-y-0 opacity-20' : '-translate-y-10 opacity-0'}`}>
-             {[...Array(16)].map((_, i) => (
-                <div key={i} className="w-1 h-1 bg-green-800 rounded-full"></div>
-             ))}
-          </div>
-          
-          {/* New Accents: Floating Geometric Shape (Bottom Left) */}
-          <div className={`absolute bottom-0 left-0 p-12 opacity-10 pointer-events-none transition-all duration-[2000ms] ease-out ${isSoldVisible ? 'translate-x-0 translate-y-0 opacity-10' : '-translate-x-20 translate-y-20 opacity-0'}`}>
-             <div className="w-48 h-48 border-2 border-gray-900 rounded-full opacity-50 absolute -bottom-12 -left-12"></div>
-             <div className="w-64 h-64 border border-green-500 rounded-full opacity-30 absolute -bottom-20 -left-20"></div>
-          </div>
-
-          {/* New Accents: Diagonal Stripes (Center Right Background) */}
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 w-64 h-full opacity-5 pointer-events-none overflow-hidden hidden xl:block">
-             {[...Array(10)].map((_, i) => (
-                 <div key={i} className={`h-32 bg-gray-900 -rotate-45 transform mb-12 transition-all duration-1000 ease-out ${isSoldVisible ? 'translate-x-12 opacity-100' : 'translate-x-48 opacity-0'}`} style={{ transitionDelay: `${i * 100}ms` }}></div>
-             ))}
-          </div>
-
-          <div className="max-w-[90rem] mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
+          <div className="max-w-[90rem] mx-auto px-4 sm:px-8 lg:px-12 relative z-10">
               
               {/* Header */}
               <div className={`flex flex-col md:flex-row items-end justify-between mb-8 gap-6 transition-all duration-1000 ease-expo ${isSoldVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -656,7 +640,7 @@ const Home: React.FC = () => {
                   <div 
                       className={`
                         group relative rounded-[2rem] overflow-hidden bg-gray-900 shadow-xl 
-                        lg:col-span-2 lg:row-span-2
+                        min-h-[300px] lg:min-h-0 lg:col-span-2 lg:row-span-2
                         transition-all duration-1000 ease-expo hover:shadow-2xl hover:z-10 hover:-translate-y-1 delay-100
                         ${isSoldVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-24 scale-95'}
                       `}
@@ -689,7 +673,7 @@ const Home: React.FC = () => {
                   <div 
                       className={`
                         group relative rounded-[2rem] overflow-hidden bg-green-700 shadow-xl 
-                        lg:col-span-1 lg:row-span-1
+                        min-h-[200px] lg:min-h-0 lg:col-span-1 lg:row-span-1
                         transition-all duration-1000 ease-expo hover:shadow-2xl hover:z-10 hover:-translate-y-1 delay-300
                         ${isSoldVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-24 scale-95'}
                       `}
@@ -720,7 +704,7 @@ const Home: React.FC = () => {
                   <div 
                       className={`
                         group relative rounded-[2rem] overflow-hidden bg-white border border-gray-200 shadow-xl 
-                        lg:col-span-1 lg:row-span-1
+                        min-h-[200px] lg:min-h-0 lg:col-span-1 lg:row-span-1
                         transition-all duration-1000 ease-expo hover:shadow-2xl hover:z-10 hover:-translate-y-1 hover:border-green-300 delay-500
                         ${isSoldVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-24 scale-95'}
                       `}
@@ -753,7 +737,7 @@ const Home: React.FC = () => {
                   <div 
                       className={`
                         group relative rounded-[2rem] overflow-hidden bg-gray-900 shadow-xl 
-                        lg:col-span-2 lg:row-span-1
+                        min-h-[200px] lg:min-h-0 lg:col-span-2 lg:row-span-1
                         transition-all duration-1000 ease-expo hover:shadow-2xl hover:z-10 hover:-translate-y-1 delay-700
                         ${isSoldVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-24 scale-95'}
                       `}
@@ -831,7 +815,7 @@ const Home: React.FC = () => {
                              onFocus={() => setIsSearchFocused(true)}
                              onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)} // Delay close to allow clicks
                              placeholder="Enter address, city, zip code, or MLS number..." 
-                             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 pl-10 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 relative z-20" 
+                             className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 md:py-2.5 pl-10 text-base md:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 relative z-20" 
                            />
                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-green-600 transition-colors z-20" size={16} />
                            
@@ -1105,15 +1089,15 @@ const Home: React.FC = () => {
                          <form className="space-y-3">
                             <div className="group/field relative">
                                <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 ml-1 group-focus-within/field:text-green-600 transition-colors">Full Name</label>
-                               <div className="relative"><User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5 group-focus-within/field:text-green-600 transition-colors" /><input type="text" className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300" placeholder="e.g. John Doe" /></div>
+                               <div className="relative"><User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5 group-focus-within/field:text-green-600 transition-colors" /><input type="text" className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-3 md:py-2.5 pl-10 pr-4 text-gray-900 text-base md:text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300" placeholder="e.g. John Doe" /></div>
                             </div>
                             <div className="group/field relative">
                                <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 ml-1 group-focus-within/field:text-green-600 transition-colors">Email Address</label>
-                               <div className="relative"><Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5 group-focus-within/field:text-green-600 transition-colors" /><input type="email" className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-gray-900 text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300" placeholder="name@example.com" /></div>
+                               <div className="relative"><Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-3.5 h-3.5 group-focus-within/field:text-green-600 transition-colors" /><input type="email" className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-3 md:py-2.5 pl-10 pr-4 text-gray-900 text-base md:text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300" placeholder="name@example.com" /></div>
                             </div>
                             <div className="group/field relative">
                                <label className="block text-[9px] font-bold uppercase tracking-widest text-gray-400 mb-1 ml-1 group-focus-within/field:text-green-600 transition-colors">Your Message</label>
-                               <textarea rows={3} className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-2.5 px-4 text-gray-900 text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300 resize-none" placeholder="How can we help you?"></textarea>
+                               <textarea rows={3} className="w-full bg-gray-50/50 border border-gray-100 rounded-xl py-3 md:py-2.5 px-4 text-gray-900 text-base md:text-xs focus:outline-none focus:bg-white focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all duration-300 resize-none" placeholder="How can we help you?"></textarea>
                             </div>
                             <button className="w-full py-3 bg-gradient-to-r from-gray-900 to-black text-white rounded-xl font-bold tracking-widest uppercase text-[10px] hover:from-green-600 hover:to-emerald-700 transition-all duration-500 flex items-center justify-center gap-2 group/btn shadow-xl shadow-gray-200 hover:shadow-green-200/50 transform hover:-translate-y-1"><span>Send Message</span><Send className="w-3 h-3 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" /></button>
                          </form>
@@ -1234,7 +1218,7 @@ const SelectFieldLight = ({ label, options, delay, isVisible }: { label: string,
    <div className={`group transition-all duration-700 ease-out`} style={{ transitionDelay: `${delay}ms`, opacity: isVisible ? 1 : 0, transform: isVisible ? 'translateY(0)' : 'translateY(10px)' }}>
       <label className="block text-gray-500 text-[10px] font-bold uppercase tracking-wider mb-1 ml-1 group-focus-within:text-green-600 transition-colors">{label}</label>
       <div className="relative">
-         <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 appearance-none focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 cursor-pointer shadow-sm hover:border-green-200">
+         <select className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 md:py-2.5 text-base md:text-sm text-gray-900 appearance-none focus:outline-none focus:bg-white focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all duration-300 cursor-pointer shadow-sm hover:border-green-200">
             {options.map((opt, i) => (
                <option key={i} value={opt} className="bg-white text-gray-900">{opt}</option>
             ))}
