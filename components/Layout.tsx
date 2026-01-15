@@ -240,7 +240,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif font-bold text-2xl text-gray-900 tracking-tight leading-tight">MARCI METZGER - THE RIDGE REALTY GROUP</span>
-                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-green-600">The Gold Standard</span>
+                  <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-green-600">Pahrump Realtor</span>
                 </div>
               </div>
               <p className="text-gray-500 text-sm leading-relaxed max-w-xs">
