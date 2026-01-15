@@ -9,6 +9,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;800&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Dynamic Favicon Container -->
+    <link id="favicon" rel="icon" type="image/png" />
+    
     <script>
       tailwind.config = {
         theme: {
@@ -23,9 +27,9 @@
               dark: '#000000', // Black
             },
             transitionTimingFunction: {
-              'expo': 'cubic-bezier(0.19, 1, 0.22, 1)', // Exponential ease out (very smooth stop)
-              'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)', // Standard efficient ease
-              'elastic': 'cubic-bezier(0.34, 1.56, 0.64, 1)', // Slight bounce
+              'expo': 'cubic-bezier(0.19, 1, 0.22, 1)', 
+              'smooth': 'cubic-bezier(0.4, 0, 0.2, 1)', 
+              'elastic': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
             },
             animation: {
               blob: "blob 10s infinite alternate cubic-bezier(0.4, 0, 0.2, 1)",
@@ -92,7 +96,6 @@
         background-color: #f3f4f6;
         scroll-behavior: smooth;
       }
-      /* Custom utility for animation delays */
       .delay-0 { animation-delay: 0ms; }
       .delay-75 { animation-delay: 75ms; }
       .delay-100 { animation-delay: 100ms; }
@@ -104,6 +107,35 @@
       .delay-600 { animation-delay: 600ms; }
       .delay-700 { animation-delay: 700ms; }
     </style>
+    <script>
+      // Script to generate a black version of the logo for the favicon
+      (function() {
+        const logoUrl = "https://lh3.googleusercontent.com/d/1CkY6ieN8w-P7JBdoH033f4-2DvtOGimv";
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          canvas.width = 64;
+          canvas.height = 64;
+          const ctx = canvas.getContext('2d');
+          
+          // Draw the image onto our icon-sized canvas
+          ctx.drawImage(img, 0, 0, 64, 64);
+          
+          // Use compositing to turn all opaque pixels into solid black
+          ctx.globalCompositeOperation = 'source-in';
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(0, 0, 64, 64);
+          
+          // Set as the favicon
+          const link = document.getElementById('favicon');
+          if (link) {
+            link.href = canvas.toDataURL('image/png');
+          }
+        };
+        img.src = logoUrl;
+      })();
+    </script>
   <script type="importmap">
 {
   "imports": {
