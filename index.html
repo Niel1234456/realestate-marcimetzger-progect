@@ -108,7 +108,6 @@
       .delay-700 { animation-delay: 700ms; }
     </style>
     <script>
-      // Script to generate a circular black favicon containing a white logo
       (function() {
         const logoUrl = "https://lh3.googleusercontent.com/d/1CkY6ieN8w-P7JBdoH033f4-2DvtOGimv";
         const img = new Image();
@@ -120,36 +119,50 @@
           canvas.height = size;
           const ctx = canvas.getContext('2d');
           
-          // 1. Draw solid black circle background
+          // 1. Draw solid white circle background
           ctx.beginPath();
           ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-          ctx.fillStyle = '#000000';
+          ctx.fillStyle = '#FFFFFF';
           ctx.fill();
           
-          // 2. Create temporary canvas to process the logo color
+          // 2. Process Logo with Aspect Ratio correction
           const tempCanvas = document.createElement('canvas');
           tempCanvas.width = size;
           tempCanvas.height = size;
           const tempCtx = tempCanvas.getContext('2d');
           
-          // Draw logo centered and slightly padded inside the circle
-          const padding = size * 0.2;
-          const drawSize = size - (padding * 2);
-          tempCtx.drawImage(img, padding, padding, drawSize, drawSize);
+          const maxDim = Math.max(img.width, img.height);
+          const scale = (size * 0.65) / maxDim; // Use 65% of canvas for padding
+          const w = img.width * scale;
+          const h = img.height * scale;
+          const x = (size - w) / 2;
+          const y = (size - h) / 2;
           
-          // Transform the logo to white so it's visible on the black circle
+          tempCtx.drawImage(img, x, y, w, h);
           tempCtx.globalCompositeOperation = 'source-in';
-          tempCtx.fillStyle = '#FFFFFF';
+          tempCtx.fillStyle = '#000000';
           tempCtx.fillRect(0, 0, size, size);
           
-          // 3. Draw the white logo onto the main circular black canvas
+          // 3. Draw onto main white circular background
           ctx.drawImage(tempCanvas, 0, 0);
           
-          // Set as the favicon
           const link = document.getElementById('favicon');
           if (link) {
             link.href = canvas.toDataURL('image/png');
           }
+        };
+        img.onerror = function() {
+           // Fallback if CORS fails
+           const canvas = document.createElement('canvas');
+           canvas.width = 32; canvas.height = 32;
+           const ctx = canvas.getContext('2d');
+           ctx.beginPath(); ctx.arc(16, 16, 16, 0, Math.PI * 2);
+           ctx.fillStyle = '#FFFFFF'; ctx.fill();
+           ctx.fillStyle = '#000000'; ctx.font = "bold 20px serif";
+           ctx.textAlign = "center"; ctx.textBaseline = "middle";
+           ctx.fillText("R", 16, 18);
+           const link = document.getElementById('favicon');
+           if (link) link.href = canvas.toDataURL();
         };
         img.src = logoUrl;
       })();
