@@ -259,10 +259,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <h4 className="font-bold text-gray-900 uppercase tracking-widest text-xs mb-6">Quick Links</h4>
               <ul className="space-y-4">
-                <li><Link to="/" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">Home Experience</Link></li>
-                <li><Link to="/listings" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">Property Listings</Link></li>
+                <li><Link to="/" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">Home</Link></li>
+                <li><Link to="/listings" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">Listings</Link></li>
                 <li><Link to="/lets-move" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">Let's Move</Link></li>
-                <li><Link to="/about" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">Our Legacy</Link></li>
+                <li><Link to="/about" className="text-gray-500 hover:text-green-600 text-sm font-semibold transition-colors">About</Link></li>
               </ul>
             </div>
 
