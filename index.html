@@ -125,44 +125,42 @@
           ctx.fillStyle = '#FFFFFF';
           ctx.fill();
           
-          // 2. Process Logo with Aspect Ratio correction
+          // 2. Prepare logo on temp canvas for color transform
           const tempCanvas = document.createElement('canvas');
           tempCanvas.width = size;
           tempCanvas.height = size;
           const tempCtx = tempCanvas.getContext('2d');
           
-          const maxDim = Math.max(img.width, img.height);
-          const scale = (size * 0.65) / maxDim; // Use 65% of canvas for padding
-          const w = img.width * scale;
-          const h = img.height * scale;
+          // Centering and padding calculations
+          const padding = size * 0.22;
+          const drawSize = size - (padding * 2);
+          
+          let w = drawSize;
+          let h = drawSize;
+          const ratio = img.width / img.height;
+          if (ratio > 1) {
+            h = drawSize / ratio;
+          } else {
+            w = drawSize * ratio;
+          }
+          
           const x = (size - w) / 2;
           const y = (size - h) / 2;
           
           tempCtx.drawImage(img, x, y, w, h);
+          
+          // Turn logo pixels to solid black
           tempCtx.globalCompositeOperation = 'source-in';
           tempCtx.fillStyle = '#000000';
           tempCtx.fillRect(0, 0, size, size);
           
-          // 3. Draw onto main white circular background
+          // 3. Composite onto white circle
           ctx.drawImage(tempCanvas, 0, 0);
           
           const link = document.getElementById('favicon');
           if (link) {
             link.href = canvas.toDataURL('image/png');
           }
-        };
-        img.onerror = function() {
-           // Fallback if CORS fails
-           const canvas = document.createElement('canvas');
-           canvas.width = 32; canvas.height = 32;
-           const ctx = canvas.getContext('2d');
-           ctx.beginPath(); ctx.arc(16, 16, 16, 0, Math.PI * 2);
-           ctx.fillStyle = '#FFFFFF'; ctx.fill();
-           ctx.fillStyle = '#000000'; ctx.font = "bold 20px serif";
-           ctx.textAlign = "center"; ctx.textBaseline = "middle";
-           ctx.fillText("R", 16, 18);
-           const link = document.getElementById('favicon');
-           if (link) link.href = canvas.toDataURL();
         };
         img.src = logoUrl;
       })();
