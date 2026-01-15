@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -41,7 +42,6 @@
               scaleIn: "scaleIn 0.5s cubic-bezier(0.19, 1, 0.22, 1) forwards",
               fadeIn: "fadeIn 0.6s ease-out forwards",
               scroll: "scroll 60s linear infinite",
-              zoomInCenter: "zoomInCenter 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards",
             },
             keyframes: {
               blob: {
@@ -61,10 +61,6 @@
               blurInUp: {
                 "0%": { opacity: "0", transform: "translateY(60px)", filter: "blur(20px)" },
                 "100%": { opacity: "1", transform: "translateY(0)", filter: "blur(0)" },
-              },
-              zoomInCenter: {
-                "0%": { opacity: "0", transform: "scale(0.8)", filter: "blur(15px)" },
-                "100%": { opacity: "1", transform: "scale(1)", filter: "blur(0)" },
               },
               slideDown: {
                 "0%": { transform: "translateY(-20px)", opacity: "0" },
@@ -112,26 +108,26 @@
       .delay-700 { animation-delay: 700ms; }
     </style>
     <script>
+      // Script to generate a black version of the logo for the favicon
       (function() {
         const logoUrl = "https://lh3.googleusercontent.com/d/1CkY6ieN8w-P7JBdoH033f4-2DvtOGimv";
         const img = new Image();
         img.crossOrigin = "anonymous";
         img.onload = function() {
-          const size = 64;
           const canvas = document.createElement('canvas');
-          canvas.width = size;
-          canvas.height = size;
+          canvas.width = 64;
+          canvas.height = 64;
           const ctx = canvas.getContext('2d');
           
-          ctx.beginPath();
-          ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
-          ctx.fillStyle = '#FFFFFF';
-          ctx.fill();
+          // Draw the image onto our icon-sized canvas
+          ctx.drawImage(img, 0, 0, 64, 64);
           
-          const padding = size * 0.15;
-          const drawSize = size - (padding * 2);
-          ctx.drawImage(img, padding, padding, drawSize, drawSize);
+          // Use compositing to turn all opaque pixels into solid black
+          ctx.globalCompositeOperation = 'source-in';
+          ctx.fillStyle = '#000000';
+          ctx.fillRect(0, 0, 64, 64);
           
+          // Set as the favicon
           const link = document.getElementById('favicon');
           if (link) {
             link.href = canvas.toDataURL('image/png');

@@ -12,7 +12,7 @@ const slides = [
     title: 'Pahrump',
     highlight: 'Realtor',
     description: 'Your trusted partner for buying and selling homes in Pahrump, Nevada. Experience integrity, expertise, and results with The Ridge Realty Group.',
-    image: "https://scontent.fmnl25-7.fna.fbcdn.net/v/t39.30808-6/480877284_1153959160021082_1293992860742485288_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=7c71e4&_nc_ohc=MaQc4Gs7gdQQ7kNvwEfWuYZ&_nc_oc=AdmWOl7c9LSiygWZmT-L7BWJUKnUrKhZPq8M6qtdqj1InxBI-pu5Nv_0ZnJJIXplO-MiqKcqAns_ct3k3pWSARmE&_nc_zt=23&_nc_ht=scontent.fmnl25-7.fna&_nc_gid=W8N8yH_uZCYriRW7HTVing&oh=00_Afp2B7wKjVhGDqG4YChCT8EorJGd55KXVmOYORwObFPrlw&oe=696BF677",
+    image: "https://scontent.fmnl25-7.fna.fbcdn.net/v/t39.30808-6/480877284_1153959160021082_1293992860742485288_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=71e4&_nc_ohc=MaQc4Gs7gdQQ7kNvwEfWuYZ&_nc_oc=AdmWOl7c9LSiygWZmT-L7BWJUKnUrKhZPq8M6qtdqj1InxBI-pu5Nv_0ZnJJIXplO-MiqKcqAns_ct3k3pWSARmE&_nc_zt=23&_nc_ht=scontent.fmnl25-7.fna&_nc_gid=W8N8yH_uZCYriRW7HTVing&oh=00_Afp2B7wKjVhGDqG4YChCT8EorJGd55KXVmOYORwObFPrlw&oe=696BF677",
   },
   {
     id: 1,
@@ -222,8 +222,8 @@ const CurvedGallery: React.FC = () => {
        {displayImages.map((img, i) => (
           <div
             key={i}
-            // Fix: Ref callbacks in React 18 must return void or a cleanup function.
-            ref={el => { itemsRef.current[i] = el; }}
+            // Fix: Wrap ref assignment to return void instead of returning the assigned element
+            ref={(el) => { itemsRef.current[i] = el; }}
             className="absolute top-2 left-0 rounded-2xl overflow-hidden shadow-2xl border border-gray-100 origin-center bg-white"
             style={{ 
               width: `${itemWidth}px`,
@@ -559,7 +559,7 @@ const Home: React.FC = () => {
       <section className="w-full bg-white border-t border-gray-100 py-10 lg:py-14 overflow-hidden relative">
           {/* Gradient Masks for seamless fade effect */}
           <div className="absolute top-0 left-0 w-16 sm:w-32 h-full bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-white via-white/80 to-transparent z-10 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-16 sm:w-32 h-full bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
           <div className="flex w-full group overflow-hidden">
             {/* First Set */}
@@ -1015,7 +1015,7 @@ const Home: React.FC = () => {
                         
                         {/* Modern Glass Icon Badge */}
                         <div className="absolute top-3 right-3 w-10 h-10 bg-white/30 backdrop-blur-md border border-white/50 rounded-xl flex items-center justify-center text-white shadow-lg z-20 group-hover:bg-green-600 group-hover:border-green-500 transition-all duration-300">
-                           {/* Fix: Casting icon as ReactElement with any to allow 'size' prop in cloneElement */}
+                           {/* Fix: Explicitly cast ReactElement to any to allow 'size' prop when cloning */}
                            {React.cloneElement(service.icon as React.ReactElement<any>, { size: 18 })}
                         </div>
                      </div>

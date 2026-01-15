@@ -1,15 +1,14 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
-import { RelocationRequest } from '../types';
+import { WorkoutRequest, GeneratedWorkout } from '../types';
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const generateRelocationGuide = async (request: RelocationRequest) => {
+export const generateWorkoutRoutine = async (request: WorkoutRequest): Promise<GeneratedWorkout> => {
   const prompt = `
-    Generate a short, professional relocation guide for someone moving from ${request.currentCity} to ${request.movingTo}.
-    Their timeframe is ${request.timeframe} and they care about: ${request.preferences}.
-    Focus on the benefits of Pahrump, Nevada if that is the destination.
-    Include 3 key steps for a smooth move.
+    Create a ${request.intensity} ${request.type} workout routine that lasts exactly ${request.duration} minutes.
+    The user has the following equipment: ${request.equipment || "None (Bodyweight only)"}.
+    
+    Return a structured JSON response with a catchy title, a brief description, a list of exercises (with name, brief instructions, and duration/reps), and a cool-down tip.
   `;
 
   try {
@@ -17,14 +16,36 @@ export const generateRelocationGuide = async (request: RelocationRequest) => {
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
-        systemInstruction: "You are a helpful and professional real estate assistant for The Ridge Realty Group.",
-        temperature: 0.7,
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            title: { type: Type.STRING },
+            description: { type: Type.STRING },
+            exercises: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  name: { type: Type.STRING },
+                  instructions: { type: Type.STRING },
+                  durationOrReps: { type: Type.STRING }
+                }
+              }
+            },
+            coolDown: { type: Type.STRING }
+          }
+        }
       }
     });
 
-    return response.text;
+    if (response.text) {
+      return JSON.parse(response.text) as GeneratedWorkout;
+    }
+    
+    throw new Error("No response text generated");
   } catch (error) {
-    console.error("Error generating guide:", error);
+    console.error("Error generating workout:", error);
     throw error;
   }
 };
